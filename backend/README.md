@@ -1,5 +1,3 @@
-## Team Responsibilities
-
-- Shubham – Backend & API Development
-- Gopal – Data Processing & Machine Learning
-- Om – Frontend & UI/UX Design
+Backend & API Development
+Owner: Shubham
+Tech: FastAPI / Flask
