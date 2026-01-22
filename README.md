@@ -1,25 +1,30 @@
-# AgroLens
-AI-based Crop Yield Prediction & Advisory System
+# AgroLens 🌾
+AI-based Crop Yield Prediction & Advisory Application
 
 ## About the Project
-AgroLens is an AI-powered platform designed to predict seasonal crop yields
-and provide actionable agricultural advisory to smallholder farmers.
-The system integrates weather, soil, historical yield, and market price data
+AgroLens is an AI-powered application designed to predict seasonal crop yields
+and provide actionable agricultural advisory to farmers.
+It is an application (not a website) and is designed to work in offline mode.
+The system supports both English and Hindi languages for better accessibility.
+
+The solution uses historical agricultural data and machine learning models
 to support data-driven farming decisions.
 
 ## Key Features
 - Crop yield prediction using machine learning
 - Advisory on irrigation and fertilizer usage
 - Explainable AI (feature importance)
-- Multilingual and offline support (planned)
-- Farmer-friendly interface
+- Offline functionality
+- Bilingual support (English & Hindi)
+- Simple and farmer-friendly interface
 
 ## Technology Stack
-- Python, Machine Learning
-- Pandas, Scikit-learn, XGBoost
-- Flask / FastAPI (backend)
-- React Native / Flutter (frontend)
-- NASA POWER, SoilGrids, Agmarknet APIs
+- Programming Language: Python
+- Machine Learning: Pandas, Scikit-learn, XGBoost
+- Backend: Flask / FastAPI
+- Frontend: Mobile/Desktop App UI (React Native / Flutter)
+- Data Sources: Government and public datasets
+  (APIs used only during data collection and training phase)
 
 ## Project Status
 Currently under development (Academic Project).
