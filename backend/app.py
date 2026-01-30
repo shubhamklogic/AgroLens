@@ -1,25 +1,23 @@
-from flask import Flask, jsonify   # Import Flask and jsonify
+from flask import Flask, jsonify, request
 
-# Initialize the Flask application
 app = Flask(__name__)
 
-# Home route
-@app.route("/")
-def home():
-    return "AgroLens Backend is working! 🌾"
-
-# Prediction API route
-@app.route("/predict")
+@app.route("/predict", methods=["POST"])
 def predict():
-    # Dummy prediction data
+    # 1. Get JSON data sent by user
+    user_data = request.get_json()
+
+    # 2. Extract crop name
+    selected_crop = user_data.get("crop", "Unknown")
+
+    # 3. Create response
     result = {
-        "crop": "Wheat",
-        "yield_prediction": 2500,
-        "unit": "kg/ha",
+        "received_crop": selected_crop,
+        "yield_prediction": 2600,  # Dummy value
         "status": "success"
     }
+
     return jsonify(result)
 
-# Start the Flask server
 if __name__ == "__main__":
     app.run(debug=True)

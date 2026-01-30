@@ -30,5 +30,10 @@ The backend is responsible for:
 - **JSON Integration**: Utilized `jsonify` to return structured data instead of plain text.
 - **Data Standardization**: Defined a standard response format containing `crop`, `yield_prediction`, and `status` to ensure compatibility with the mobile frontend.
 
+### Progress Update: 20/01/26
+- **POST Request Implementation**: Transitioned from GET to POST for the `/predict` endpoint to allow user input.
+- **Request Parsing**: Integrated `flask.request` to extract JSON data from incoming requests.
+- **Automated Testing**: Developed a Python-based testing script (`test_api.py`) to verify API functionality independently of the browser.
+
 ## Maintained By
 Shubham (Backend & API Engineer)
