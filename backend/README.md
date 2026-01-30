@@ -4,20 +4,21 @@ This folder contains the backend logic of the AgroLens application.
 
 The backend is responsible for:
 - Handling application logic
-- Managing APIs
+- Managing REST APIs
 - Processing user input
-- Connecting the machine learning model with the app
-- Supporting offline functionality
+- Connecting the machine learning model with the mobile app
+- Supporting offline functionality using a local server
 
 ## Responsibilities
-- Backend & API Development
+- Backend and API development
 - Data handling and validation
-- Model integration
+- Machine learning model integration
+- Offline backend support
 
 ## Technologies Used
 - Python
-- Flask / FastAPI
-- REST APIs
+- Flask (Local REST API)
+- JSON-based API communication
 
 ## Maintained By
 Shubham (Backend & API Engineer)
