@@ -1,24 +1,25 @@
 # Frontend Module – AgroLens
 
-This folder contains the frontend of the AgroLens application.
+This folder contains the frontend of the AgroLens mobile application.
 
 The frontend is responsible for:
-- User interface (UI) of the application
+- User interface (UI) of the mobile application
 - User experience (UX) design
 - Displaying crop yield predictions and advisories
 - Supporting bilingual interface (English and Hindi)
 - Working in offline mode
 
 ## Responsibilities
-- App UI design
-- User interaction handling
+- Mobile app UI design
+- Handling user interactions
 - Language selection (English / Hindi)
-- Data display from backend
+- Displaying data received from the backend
+- Managing offline data access
 
 ## Technologies Used
 - React Native / Flutter
-- HTML, CSS (for UI styling)
-- Local storage for offline usage
+- Mobile UI components and styling frameworks
+- Local storage (AsyncStorage / SQLite) for offline usage
 
 ## Maintained By
 Om (Frontend & UX Developer)
