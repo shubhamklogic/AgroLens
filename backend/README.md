@@ -30,17 +30,3 @@ backend/
 ├── test_api.py        # Automated testing suite for POST requests
 ├── requirements.txt   # Project dependencies (Flask, requests)
 └── README.md          # Technical documentation
-
----
-
-## 🚀 **How to Run**
-Install Dependencies
-pip install -r requirements.txt
-
-Start the Server
-python app.py
-
-Run API Tests
-python test_api.py
-
----
