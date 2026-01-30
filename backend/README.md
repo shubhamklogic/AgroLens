@@ -35,5 +35,10 @@ The backend is responsible for:
 - **Request Parsing**: Integrated `flask.request` to extract JSON data from incoming requests.
 - **Automated Testing**: Developed a Python-based testing script (`test_api.py`) to verify API functionality independently of the browser.
 
+### Progress Update: 21/01/26
+- **Logic Implementation**: Added conditional logic (if-else) to simulate ML model responses for Wheat, Rice, and Maize.
+- **Advisory Layer**: Integrated basic agricultural advice into the API response.
+- **System Testing**: Verified that different user inputs trigger unique backend responses.
+
 ## Maintained By
 Shubham (Backend & API Engineer)
