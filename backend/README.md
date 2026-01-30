@@ -72,6 +72,11 @@ python test_api.py
 - Code Refactoring: Cleaned folder structure and modularized functions for future integration.
 - Final Documentation: Finalized README.md and requirements.txt for Week 1 project delivery.
 
+### Progress Update: 25/01/26
+- **External API Integration**: Successfully connected to the NASA POWER API using the Python `requests` library.
+- **Weather Data Fetching**: Developed a script to retrieve real-time temperature (T2M) and precipitation (PRECTOTCORR) data for specific coordinates.
+- **Verification**: Confirmed successful data retrieval in JSON format (Status 200).
+
 
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
