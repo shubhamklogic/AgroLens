@@ -26,8 +26,8 @@ The backend is responsible for:
 - Tested local server connection on port 5000.
 
 ### Progress Update: 19/01/26
-- **API Endpoint Created**: Implemented the `/predict` route[cite: 301].
-- **JSON Integration**: Utilized `jsonify` to return structured data instead of plain text[cite: 303, 307].
+- **API Endpoint Created**: Implemented the `/predict` route.
+- **JSON Integration**: Utilized `jsonify` to return structured data instead of plain text.
 - **Data Standardization**: Defined a standard response format containing `crop`, `yield_prediction`, and `status` to ensure compatibility with the mobile frontend.
 
 ## Maintained By
