@@ -20,5 +20,10 @@ The backend is responsible for:
 - Flask (Local REST API)
 - JSON-based API communication
 
+### Progress Update: 18/01/26
+- Successfully initialized Flask server.
+- Created root route ("/") returning a status message.
+- Tested local server connection on port 5000.
+
 ## Maintained By
 Shubham (Backend & API Engineer)
