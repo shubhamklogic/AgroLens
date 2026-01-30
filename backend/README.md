@@ -1,44 +1,32 @@
-# Backend Module – AgroLens
+# **Backend Module – AgroLens 🌾**
 
-This folder contains the backend logic of the AgroLens application.
+This folder contains the core backend logic for the AgroLens application. The backend serves as the central hub, connecting the mobile frontend with AI prediction models and external environmental data.
 
-The backend is responsible for:
-- Handling application logic
-- Managing REST APIs
-- Processing user input
-- Connecting the machine learning model with the mobile app
-- Supporting offline functionality using a local server
+---
 
-## Responsibilities
-- Backend and API development
-- Data handling and validation
-- Machine learning model integration
-- Offline backend support
+## 🎯 **Core Responsibilities**
 
-## Technologies Used
-- Python
-- Flask (Local REST API)
-- JSON-based API communication
+- **API Management:** Developing and maintaining RESTful endpoints for mobile communication.  
+- **Input Processing:** Parsing and validating JSON data sent by farmers (crop type, location).  
+- **Model Integration:** Connecting Random Forest and XGBoost models to the live application.  
+- **Advisory Logic:** Generating actionable farming advice based on model outputs.
 
-### Progress Update: 18/01/26
-- Successfully initialized Flask server.
-- Created root route ("/") returning a status message.
-- Tested local server connection on port 5000.
+---
 
-### Progress Update: 19/01/26
-- **API Endpoint Created**: Implemented the `/predict` route.
-- **JSON Integration**: Utilized `jsonify` to return structured data instead of plain text.
-- **Data Standardization**: Defined a standard response format containing `crop`, `yield_prediction`, and `status` to ensure compatibility with the mobile frontend.
+## 🛠️ **Technologies Used**
 
-### Progress Update: 20/01/26
-- **POST Request Implementation**: Transitioned from GET to POST for the `/predict` endpoint to allow user input.
-- **Request Parsing**: Integrated `flask.request` to extract JSON data from incoming requests.
-- **Automated Testing**: Developed a Python-based testing script (`test_api.py`) to verify API functionality independently of the browser.
+- **Language:** Python  
+- **Framework:** Flask (Micro-web framework)  
+- **Communication:** JSON-based REST API  
+- **Testing:** Python Requests library & test_api.py script
 
-### Progress Update: 21/01/26
-- **Logic Implementation**: Added conditional logic (if-else) to simulate ML model responses for Wheat, Rice, and Maize.
-- **Advisory Layer**: Integrated basic agricultural advice into the API response.
-- **System Testing**: Verified that different user inputs trigger unique backend responses.
+---
 
-## Maintained By
-Shubham (Backend & API Engineer)
+## 📂 **Project Structure**
+
+```plaintext
+backend/
+├── app.py             # Main Flask server and API routes
+├── test_api.py        # Automated testing suite for POST requests
+├── requirements.txt   # Project dependencies (Flask, requests)
+└── README.md          # Technical documentation
