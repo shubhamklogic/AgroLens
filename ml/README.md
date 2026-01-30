@@ -7,13 +7,13 @@ The ML module is responsible for:
 - Training crop yield prediction models
 - Evaluating model performance
 - Generating predictions for the application
-- Supporting explainable AI for better understanding
+- Supporting explainable AI for better model understanding
 
 ## Responsibilities
 - Dataset cleaning and preparation
-- Model training and testing
-- Feature importance and explainability
-- Exporting trained models for backend use
+- Model training, testing, and evaluation
+- Feature importance analysis and explainability
+- Exporting trained models for backend integration
 
 ## Technologies Used
 - Python
@@ -21,9 +21,9 @@ The ML module is responsible for:
 - Scikit-learn, XGBoost
 
 ## Notes
-- Public and government datasets are used
-- APIs are used only during data collection and training
-- Trained models are used offline in the application
+- Public and government datasets are used for training
+- APIs are used only during data collection and training phase
+- Trained models are stored locally and used offline for prediction
 
 ## Maintained By
 Gopal (Data & ML Lead)
