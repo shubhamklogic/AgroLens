@@ -20,11 +20,13 @@ to support data-driven farming decisions.
 
 ## Technology Stack
 - Programming Language: Python
-- Machine Learning: Pandas, Scikit-learn, XGBoost
-- Backend: Flask / FastAPI
-- Frontend: Mobile App UI (React Native / Flutter)
-- Data Sources: Government and public datasets
-  (APIs used only during data collection and training phase)
+- Machine Learning: Pandas, NumPy, Scikit-learn, XGBoost
+- Backend: Flask (Local REST API for offline usage)
+- Frontend: Mobile Application (Flutter / React Native)
+- Database: SQLite (Local storage)
+- Data Sources: Government and public datasets  
+  (APIs are used only during data collection and model training phase)
+- Deployment Mode: Offline (Local backend and on-device inference)
 
 ## Project Status
 Currently under development (Academic Project).
