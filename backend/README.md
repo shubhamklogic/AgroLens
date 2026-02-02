@@ -88,6 +88,11 @@ python test_api.py
 - **Defensive Coding**: Implemented `get_json(silent=True)` to handle malformed requests gracefully.
 - **Real-world Data Flow**: The backend now uses live average temperature to influence yield prediction values.
 
+### Progress Update: 28/01/26
+- **Dynamic Coordinates**: Refactored the `/predict` endpoint to accept Latitude and Longitude from the frontend request.
+- **Input Validation**: Added range checks (-90 to 90 for Lat, -180 to 180 for Lon) to ensure data integrity.
+- **Enhanced Response**: The API now returns the specific location data alongside weather summaries and yield predictions.
+
 
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
