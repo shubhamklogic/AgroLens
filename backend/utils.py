@@ -21,21 +21,29 @@ def get_weather_data(lat, lon):
         response.raise_for_status()
         data = response.json()
 
+        # Extract required data
         weather_values = data["properties"]["parameter"]
         temp_dict = weather_values["T2M"]
         rain_dict = weather_values["PRECTOTCORR"]
 
-        # Remove None values (important)
+        # Remove None values
         valid_temps = [t for t in temp_dict.values() if t is not None]
         valid_rain = [r for r in rain_dict.values() if r is not None]
+
+        # Safety check
+        if not valid_temps:
+            return {
+                "status": "error",
+                "message": "No valid weather data found for this location."
+            }
 
         avg_temp = sum(valid_temps) / len(valid_temps)
         total_rain = sum(valid_rain)
 
         return {
+            "status": "success",
             "avg_temp": round(avg_temp, 2),
-            "total_rain": round(total_rain, 2),
-            "status": "success"
+            "total_rain": round(total_rain, 2)
         }
 
     except Exception as e:
