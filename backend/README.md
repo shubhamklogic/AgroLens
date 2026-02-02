@@ -78,9 +78,15 @@ python test_api.py
 - **Verification**: Confirmed successful data retrieval in JSON format (Status 200).
 
 ### Progress Update: 26/01/26
-* **Data Cleaning Logic**: Implemented a parser to navigate the nested NASA POWER JSON structure.
-* **Feature Extraction**: Successfully isolated `T2M` (Temperature) and `PRECTOTCORR` (Rainfall) values.
-* **Summary Calculations**: Added logic to calculate average temperature for localized farm summaries.
+- **Data Cleaning Logic**: Implemented a parser to navigate the nested NASA POWER JSON structure.
+- **Feature Extraction**: Successfully isolated `T2M` (Temperature) and `PRECTOTCORR` (Rainfall) values.
+- **Summary Calculations**: Added logic to calculate average temperature for localized farm summaries.
+
+### Progress Update: 27/01/26
+- **Modular Refactoring**: Created `utils.py` to house external API logic, improving code maintainability.
+- **Full Integration**: Successfully connected the Flask `/predict` endpoint to the NASA POWER API.
+- **Defensive Coding**: Implemented `get_json(silent=True)` to handle malformed requests gracefully.
+- **Real-world Data Flow**: The backend now uses live average temperature to influence yield prediction values.
 
 
 ## 👤 Maintained By
