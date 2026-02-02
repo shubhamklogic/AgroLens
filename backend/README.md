@@ -77,6 +77,11 @@ python test_api.py
 - **Weather Data Fetching**: Developed a script to retrieve real-time temperature (T2M) and precipitation (PRECTOTCORR) data for specific coordinates.
 - **Verification**: Confirmed successful data retrieval in JSON format (Status 200).
 
+### Progress Update: 26/01/26
+* **Data Cleaning Logic**: Implemented a parser to navigate the nested NASA POWER JSON structure.
+* **Feature Extraction**: Successfully isolated `T2M` (Temperature) and `PRECTOTCORR` (Rainfall) values.
+* **Summary Calculations**: Added logic to calculate average temperature for localized farm summaries.
+
 
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
