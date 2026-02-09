@@ -110,5 +110,11 @@ python test_api.py
 - **Architecture Readiness**: Configured the backend to handle input parameters (Temperature, Rainfall, and Soil pH) in a specific order to match the future ML model training requirements.
 - **Mock Integration**: Successfully tested the data flow using the placeholder `model.pkl` to verify that features are correctly gathered and formatted before the prediction call.
 
+### Progress Update: 03/02/26
+- **Prediction Pipeline**: Developed the core prediction logic using the `.predict()` method to interface with the loaded Pickle model.
+- **Inference Logic**: Implemented an extraction step to retrieve the scalar yield value from the model's output array (`prediction[0]`).
+- **Simulated Intelligence**: Integrated a fallback mathematical logic for the current Mock Model to ensure the backend continues to provide realistic yield estimates during the development phase.
+- **Workflow Verification**: Confirmed that the "Feature Vector -> Model Inference -> Result" pipeline is operational and returns standardized numerical data.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
