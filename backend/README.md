@@ -104,6 +104,11 @@ python test_api.py
 - **Workflow Analysis**: Defined the data flow where the backend acts as an orchestrator, funneling meteorological and user data into the pre-trained model.
 - **System Preparation**: Studied the implementation of model serialization using the Pickle library to ensure efficient loading of the predictive intelligence into the Flask environment.
 
+### Progress Update: 02/02/26
+- **Feature Engineering**: Implemented the logic to transform raw data (Weather & User Input) into a structured Feature Vector.
+- **Data Formatting**: Applied 2D array formatting (`[[...]]`) to ensure compatibility with standard Machine Learning libraries (Scikit-Learn/XGBoost).
+- **Architecture Readiness**: Configured the backend to handle input parameters (Temperature, Rainfall, and Soil pH) in a specific order to match the future ML model training requirements.
+- **Mock Integration**: Successfully tested the data flow using the placeholder `model.pkl` to verify that features are correctly gathered and formatted before the prediction call.
 
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
