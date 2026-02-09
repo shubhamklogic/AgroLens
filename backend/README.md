@@ -99,6 +99,11 @@ python test_api.py
 - **Dynamic Advice**: Created a weather-aware recommendation system that adjusts based on rainfall and temperature.
 - **Standardization**: Finalized the JSON response schema, including ISO timestamps and structured metadata for frontend integration.
 
+### Progress Update: 31/01/26
+- **Conceptual Design**: Completed the architectural mapping of the Machine Learning integration layer.
+- **Workflow Analysis**: Defined the data flow where the backend acts as an orchestrator, funneling meteorological and user data into the pre-trained model.
+- **System Preparation**: Studied the implementation of model serialization using the Pickle library to ensure efficient loading of the predictive intelligence into the Flask environment.
+
 
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
