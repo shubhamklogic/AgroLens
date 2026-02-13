@@ -22,12 +22,14 @@ model = load_model()
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    # 1. Read input safely (Feb 2 task)
+    # Read input safely
     user_data = request.get_json(silent=True) or {}
-    crop = user_data.get("crop", "unknown").capitalize()
-    lat = user_data.get("lat", 26.91)   # Default: Jaipur
-    lon = user_data.get("lon", 75.78)
-    soil_ph = user_data.get("soil_ph", 6.5) # Default pH
+
+    # Standardizing inputs
+    crop = user_data.get("crop", "wheat").capitalize()
+    lat = user_data.get("lat", 28.6)
+    lon = user_data.get("lon", 77.2)
+    soil_ph = user_data.get("soil_ph", 6.5)
 
     # 2. Fetch live weather data
     weather = get_weather_data(lat=lat, lon=lon)
