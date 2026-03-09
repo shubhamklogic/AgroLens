@@ -99,6 +99,33 @@ python test_api.py
 - **Dynamic Advice**: Created a weather-aware recommendation system that adjusts based on rainfall and temperature.
 - **Standardization**: Finalized the JSON response schema, including ISO timestamps and structured metadata for frontend integration.
 
+### Progress Update: 31/01/26
+- **Conceptual Design**: Completed the architectural mapping of the Machine Learning integration layer.
+- **Workflow Analysis**: Defined the data flow where the backend acts as an orchestrator, funneling meteorological and user data into the pre-trained model.
+- **System Preparation**: Studied the implementation of model serialization using the Pickle library to ensure efficient loading of the predictive intelligence into the Flask environment.
+
+### Progress Update: 02/02/26
+- **Feature Engineering**: Implemented the logic to transform raw data (Weather & User Input) into a structured Feature Vector.
+- **Data Formatting**: Applied 2D array formatting (`[[...]]`) to ensure compatibility with standard Machine Learning libraries (Scikit-Learn/XGBoost).
+- **Architecture Readiness**: Configured the backend to handle input parameters (Temperature, Rainfall, and Soil pH) in a specific order to match the future ML model training requirements.
+- **Mock Integration**: Successfully tested the data flow using the placeholder `model.pkl` to verify that features are correctly gathered and formatted before the prediction call.
+
+### Progress Update: 03/02/26
+- **Prediction Pipeline**: Developed the core prediction logic using the `.predict()` method to interface with the loaded Pickle model.
+- **Inference Logic**: Implemented an extraction step to retrieve the scalar yield value from the model's output array (`prediction[0]`).
+- **Simulated Intelligence**: Integrated a fallback mathematical logic for the current Mock Model to ensure the backend continues to provide realistic yield estimates during the development phase.
+- **Workflow Verification**: Confirmed that the "Feature Vector -> Model Inference -> Result" pipeline is operational and returns standardized numerical data.
+
+### Progress Update: 04/02/26
+- **Final API Integration**: Completed the development of the primary `/predict` endpoint.
+- **End-to-End Workflow**: Established the full pipeline: Fetching NASA weather -> Feature Vectorization -> ML Model Inference -> Structured JSON Response.
+- **Frontend Compatibility**: Standardized the input schema to accept crop, coordinates, and soil pH values.
+
+### Progress Update: 05/02/26
+- **Final Validation**: Conducted stress testing of the /predict API with varying soil pH and location parameters.
+- **Code Refactoring**: Added detailed documentation and comments to facilitate.
+- **System Documentation**: Finalized the explanation of the "Input -> Processing -> Prediction" pipeline.
+- **Milestone Reached**: Completed—ML model connected and API fully operational.
 
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
