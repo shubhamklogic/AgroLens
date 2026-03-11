@@ -127,5 +127,10 @@ python test_api.py
 - **System Documentation**: Finalized the explanation of the "Input -> Processing -> Prediction" pipeline.
 - **Milestone Reached**: Completed—ML model connected and API fully operational.
 
+### Progress Update: 07/02/26
+- **Evaluation Research**: Studied key performance metrics for regression models, including Mean Absolute Error (MAE), Root Mean Square Error (RMSE), and R-squared (R2) score.
+- **Metric Definitions**: Established the mathematical basis for 'average mistake' (MAE) and 'large error penalties' (RMSE) to be used in the upcoming Evaluation API.
+- **Viva Preparation**: Formulated technical explanations for model reliability and accuracy quantification.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
