@@ -7,4 +7,3 @@ dummy_model = {"version": "1.0", "type": "placeholder"}
 with open("model.pkl", "wb") as f:
     pickle.dump(dummy_model, f)
 
-print("Dummy model.pkl created successfully!")
