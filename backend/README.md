@@ -132,5 +132,10 @@ python test_api.py
 - **Metric Definitions**: Established the mathematical basis for 'average mistake' (MAE) and 'large error penalties' (RMSE) to be used in the upcoming Evaluation API.
 - **Viva Preparation**: Formulated technical explanations for model reliability and accuracy quantification.
 
+### Progress Update: 08/02/26
+- **Data Segregation**: Implemented the `train_test_split` logic to isolate training and testing datasets.
+- **Ratio Configuration**: Configured a 80:20 split ratio to reserve 20% of the dataset for unbiased model evaluation.
+- **Validation Readiness**: Established the foundational variables (X_test, y_test) required for calculating MAE and R2 scores.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
