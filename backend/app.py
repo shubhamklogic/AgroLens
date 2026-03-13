@@ -3,14 +3,13 @@ from utils import get_weather_data
 from datetime import datetime
 import pickle
 import os
+import json
 
 app = Flask(__name__)
 
 # -------------------------------------------------
 # MODEL LOADING SECTION
-# Load the pre-trained model once at startup to save resources [cite: 10, 24]
 # -------------------------------------------------
-
 def load_model():
     model_path = "model.pkl"
     if os.path.exists(model_path):
@@ -21,21 +20,13 @@ def load_model():
             print(f"Error loading model: {e}")
     return None
 
-# Model is loaded only once when server starts
 model = load_model()
-
 
 # -------------------------------------------------
 # PREDICTION API
 # -------------------------------------------------
-
 @app.route("/predict", methods=["POST"])
 def predict():
-
-    # -------------------------------------------------
-    # Step 1: Extract data from the frontend request [cite: 48, 55]
-    # Read JSON input safely and assign default values
-    # -------------------------------------------------
     user_data = request.get_json(silent=True) or {}
 
     crop = user_data.get("crop", "wheat").capitalize()
@@ -43,10 +34,6 @@ def predict():
     lon = user_data.get("lon", 77.2)
     soil_ph = user_data.get("soil_ph", 6.5)
 
-
-    # -------------------------------------------------
-    # Step 2: Fetch meteorological data (Weather) using coordinates [cite: 56]
-    # -------------------------------------------------
     weather = get_weather_data(lat=lat, lon=lon)
     if weather["status"] == "error":
         return jsonify({"status": "error", "message": "Weather service unavailable"}), 500
@@ -54,44 +41,23 @@ def predict():
     avg_temp = weather["avg_temp"]
     total_rain = weather["total_rain"]
 
-
-    # -------------------------------------------------
-    # Step 3: Format inputs into a 2D Feature Vector for the ML model [cite: 31, 57]
-    # -------------------------------------------------
-    # ML models expect input in 2D array format
-    # [[temperature, rainfall, soil_ph]]
     features = [[avg_temp, total_rain, soil_ph]]
 
-
-    # -------------------------------------------------
-    # Step 4: Perform inference and return the JSON response [cite: 58, 59]
-    # -------------------------------------------------
     try:
         if model and hasattr(model, "predict"):
-            # Real ML model prediction
             prediction = model.predict(features)
             predicted_yield = float(prediction[0])
         else:
-            # Dummy logic used if model is not available
             predicted_yield = (avg_temp * 10) + (total_rain * 5) - (soil_ph * 2)
             print("DEBUG: Using Dummy/Mock prediction logic")
-
     except Exception as e:
         return jsonify({"status": "error", "message": f"Prediction failed: {e}"}), 500
 
-
-    # -------------------------------------------------
-    # Recommendation Logic (Week 2)
-    # -------------------------------------------------
     if total_rain > 10:
         advice = f"High rainfall ({total_rain} mm) detected. Avoid extra irrigation."
     else:
         advice = f"Weather stable for {crop}. Maintain standard soil moisture."
 
-
-    # -------------------------------------------------
-    # Final Structured JSON Response
-    # -------------------------------------------------
     return jsonify({
         "status": "success",
         "metadata": {
@@ -108,9 +74,37 @@ def predict():
         "recommendation": advice
     })
 
+# -------------------------------------------------
+# EVALUATION API SECTION (Moved Above app.run)
+# -------------------------------------------------
+@app.route("/metrics", methods=["GET"])
+def metrics_api():
+    """
+    API endpoint to return model performance metrics (MAE, RMSE, R2). [cite: 44, 45]
+    """
+    metrics_path = "metrics.json"
+    
+    if os.path.exists(metrics_path):
+        try:
+            with open(metrics_path, "r") as f:
+                metrics_data = json.load(f)
+            return jsonify({
+                "status": "success",
+                "data": metrics_data
+            }), 200
+        except Exception as e:
+            return jsonify({
+                "status": "error", 
+                "message": f"Failed to read metrics: {e}"
+            }), 500
+    else:
+        return jsonify({
+            "status": "error", 
+            "message": "Metrics file not found. Please run evaluation first."
+        }), 404
 
 # -------------------------------------------------
-# RUN SERVER
+# RUN SERVER (Keep this at the very bottom!)
 # -------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)

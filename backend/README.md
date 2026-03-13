@@ -147,5 +147,10 @@ python test_api.py
 - **Storage Strategy**: Configured the backend to store performance results locally, enabling fast retrieval for reporting and API consumption.
 - **Reporting Readiness**: Standardized the metric dictionary to include timestamps for version tracking of model accuracy.
 
+### Progress Update: 11/02/26
+- **API Expansion**: Created the `/metrics` GET endpoint to expose model performance data.
+- **Resource Integration**: Linked the Flask route to the static `metrics.json` storage for efficient data serving.
+- **Frontend Readiness**: Enabled programmatic access to accuracy scores (MAE, RMSE, R2) for dashboard visualization.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
