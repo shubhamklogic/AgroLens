@@ -152,5 +152,10 @@ python test_api.py
 - **Resource Integration**: Linked the Flask route to the static `metrics.json` storage for efficient data serving.
 - **Frontend Readiness**: Enabled programmatic access to accuracy scores (MAE, RMSE, R2) for dashboard visualization.
 
+### Progress Update: 12/02/26
+- **Final Validation**: Successfully tested the integration of the Prediction API and the Metrics API.
+- **Week 4 Milestone**: Completed the model evaluation cycle (Split -> Calculate -> Save -> Serve).
+- **Backend Status**: Evaluation results are now accessible via a GET request to the `/metrics` endpoint.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
