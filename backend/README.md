@@ -157,5 +157,10 @@ python test_api.py
 - **Week 4 Milestone**: Completed the model evaluation cycle (Split -> Calculate -> Save -> Serve).
 - **Backend Status**: Evaluation results are now accessible via a GET request to the `/metrics` endpoint.
 
+### Progress Update: 16/02/26
+- **Explainability Engine**: Integrated the SHAP TreeExplainer to interpret model decision-making.
+- **Value Generation**: Successfully calculated SHAP values for the training dataset to identify feature-level contributions.
+- **Transparency Milestone**: Established the mathematical basis for explaining why the model predicts specific yield values.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
