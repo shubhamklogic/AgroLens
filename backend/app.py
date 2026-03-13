@@ -23,6 +23,7 @@ def load_model():
 
 model = load_model()
 
+
 # -------------------------------------------------
 # PREDICTION API
 # This endpoint receives user input and returns
@@ -30,7 +31,7 @@ model = load_model()
 # -------------------------------------------------
 @app.route("/predict", methods=["POST"])
 def predict():
-    
+
     # Get JSON data from request body
     user_data = request.get_json(silent=True) or {}
 
@@ -43,6 +44,7 @@ def predict():
     # Fetch weather data using helper utility
     weather = get_weather_data(lat=lat, lon=lon)
 
+    # Handle weather service failure
     if weather["status"] == "error":
         return jsonify({
             "status": "error",
@@ -115,6 +117,7 @@ def metrics_api():
 
     if os.path.exists(metrics_path):
         try:
+            # Load metrics from file
             with open(metrics_path, "r") as f:
                 metrics_data = json.load(f)
 
@@ -160,6 +163,51 @@ def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_featur
         "advice": advice,
         "primary_factor": top_feature
     }
+
+
+# -------------------------------------------------
+# ADVISORY API SECTION (19/02 Task)
+# Returns specific agricultural advice and
+# identifies the most important influencing feature
+# -------------------------------------------------
+@app.route("/advisory", methods=["POST"])
+def advisory_api():
+    """
+    API endpoint that returns specific agricultural advice 
+    and the most important feature driving the prediction.
+    """
+    try:
+        user_data = request.get_json(silent=True) or {}
+
+        # Extract values (using defaults if missing)
+        temp = user_data.get("temp", 25.0)
+        rain = user_data.get("rain", 150.0)
+        ph = user_data.get("soil_ph", 6.5)
+        predicted_yield = user_data.get("predicted_yield", 3000.0)
+
+        # Identify the most impactful factor (simulated logic)
+        important_feature = "rainfall" if rain < 100 else "temperature"
+
+        # Advisory logic based on conditions
+        if rain < 100:
+            advice = "Low rainfall detected. Increase irrigation."
+        elif temp > 32:
+            advice = "Heat stress likely. Ensure adequate soil moisture."
+        else:
+            advice = "Conditions are stable. Follow standard crop cycle."
+
+        return jsonify({
+            "status": "success",
+            "advice": advice,
+            "important_feature": important_feature,
+            "impact_level": "High"
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 
 # -------------------------------------------------

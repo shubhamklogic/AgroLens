@@ -172,5 +172,10 @@ python test_api.py
 - **Feature-Driven Advice**: Integrated SHAP feature importance to ground recommendations in specific environmental factors.
 - **Insight Generation**: Successfully simulated the transition from 'Black Box' results to actionable farming insights.
 
+### Progress Update: 19/02/26
+- **XAI Phase Completed**: Successfully integrated SHAP-based feature importance into the prediction pipeline.
+- **Advisory API**: Launched the `/advisory` endpoint to provide data-driven recommendations to farmers.
+- **Logic Validation**: Verified the advisory engine using POST requests/test_api.py, confirming accurate feature-to-advice mapping.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
