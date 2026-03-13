@@ -1,6 +1,8 @@
-from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
+import json
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 # 1. Simulate a small dataset (Since we are using Mock data)
 # In a real scenario, this would be your CSV file
@@ -25,9 +27,7 @@ print(f"Total Data: {len(X)}")
 print(f"Training Samples: {len(X_train)}") # 80 samples
 print(f"Testing Samples: {len(X_test)}")   # 20 samples
 
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-
-# 1. GENERATE PREDICTIONS (09/02 Task)
+# 1. GENERATE PREDICTIONS
 # In the real project, this would be: pred = model.predict(X_test)
 # For our Mock setup, we simulate predictions with a small random variation
 pred = y_test + np.random.normal(0, 100, len(y_test)) 
@@ -37,8 +37,25 @@ mae = mean_absolute_error(y_test, pred)
 rmse = np.sqrt(mean_squared_error(y_test, pred))
 r2 = r2_score(y_test, pred)
 
-# 3. OUTPUT THE RESULTS (09/02 Task)
+# 3. OUTPUT THE RESULTS
 print("--- Model Performance Metrics ---")
 print(f"MAE  (Mean Absolute Error): {mae:.2f}")
 print(f"RMSE (Root Mean Square Error): {rmse:.2f}")
 print(f"R2 Score (Accuracy): {r2:.4f}")
+
+# 4. Organize your metrics into a dictionary
+metrics_results = {
+    "MAE": round(mae, 2),
+    "RMSE": round(rmse, 2),
+    "R2": round(r2, 4),
+    "last_updated": "2026-02-10"
+}
+
+# 5. Save the metrics to a JSON file
+try:
+    with open('metrics.json', 'w') as f:
+        json.dump(metrics_results, f, indent=4)
+    print("--- Metrics Saved Successfully to metrics.json ---")
+    print(metrics_results)
+except Exception as e:
+    print(f"Error saving metrics: {e}")
