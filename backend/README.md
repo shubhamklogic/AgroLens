@@ -167,5 +167,10 @@ python test_api.py
 - **Data Insights**: Identified the primary drivers of crop yield within the simulated dataset (e.g., Temperature vs. Rainfall).
 - **Metric Enhancement**: Updated the automated reporting pipeline to include feature importance scores in the final evaluation output.
 
+### Progress Update: 18/02/26
+- **Advisory Logic Implementation**: Developed a rule-based engine to convert numerical ML outputs into agricultural recommendations.
+- **Feature-Driven Advice**: Integrated SHAP feature importance to ground recommendations in specific environmental factors.
+- **Insight Generation**: Successfully simulated the transition from 'Black Box' results to actionable farming insights.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
