@@ -162,5 +162,10 @@ python test_api.py
 - **Value Generation**: Successfully calculated SHAP values for the training dataset to identify feature-level contributions.
 - **Transparency Milestone**: Established the mathematical basis for explaining why the model predicts specific yield values.
 
+### Progress Update: 17/02/26
+- **Feature Importance Extraction**: Calculated the mean absolute SHAP values to rank input features by their predictive power.
+- **Data Insights**: Identified the primary drivers of crop yield within the simulated dataset (e.g., Temperature vs. Rainfall).
+- **Metric Enhancement**: Updated the automated reporting pipeline to include feature importance scores in the final evaluation output.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)

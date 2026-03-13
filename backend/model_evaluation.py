@@ -106,3 +106,26 @@ shap_values = explainer.shap_values(X_train)
 
 print("SHAP Values Generated Successfully")
 print("Shape of SHAP values:", np.shape(shap_values))
+
+# ---------------------------------------------------
+# 9. Extract Feature Importance (17/02 Task)
+# ---------------------------------------------------
+
+# Calculate mean absolute SHAP values for each feature
+importance_scores = np.mean(np.abs(shap_values), axis=0)
+
+# Map scores to feature names
+feature_names = X.columns
+importance_map = dict(zip(feature_names, importance_scores))
+
+# Sort features by importance (highest first)
+sorted_importance = dict(sorted(importance_map.items(), key=lambda item: item[1], reverse=True))
+
+print("\n--- Feature Importance Scores ---")
+for feature, score in sorted_importance.items():
+    print(f"{feature}: {score:.4f}")
+
+# 10. Save Importance to metrics.json (Optional but Recommended)
+metrics_results["feature_importance"] = sorted_importance
+with open("metrics.json", "w") as f:
+    json.dump(metrics_results, f, indent=4)
