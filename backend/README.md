@@ -137,5 +137,10 @@ python test_api.py
 - **Ratio Configuration**: Configured a 80:20 split ratio to reserve 20% of the dataset for unbiased model evaluation.
 - **Validation Readiness**: Established the foundational variables (X_test, y_test) required for calculating MAE and R2 scores.
 
+### Progress Update: 09/02/26
+- **Performance Quantification**: Implemented the calculation of MAE, RMSE, and R2 score using the Scikit-Learn metrics module.
+- **Model Inference**: Executed a prediction run on the isolated testing dataset (X_test) to evaluate simulated model accuracy.
+- **Data Validation**: Verified the output values to ensure they fall within expected statistical ranges for agricultural yield prediction.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)

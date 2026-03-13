@@ -24,3 +24,21 @@ X_train, X_test, y_train, y_test = train_test_split(
 print(f"Total Data: {len(X)}")
 print(f"Training Samples: {len(X_train)}") # 80 samples
 print(f"Testing Samples: {len(X_test)}")   # 20 samples
+
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+# 1. GENERATE PREDICTIONS (09/02 Task)
+# In the real project, this would be: pred = model.predict(X_test)
+# For our Mock setup, we simulate predictions with a small random variation
+pred = y_test + np.random.normal(0, 100, len(y_test)) 
+
+# 2. CALCULATE THE 3 METRICS
+mae = mean_absolute_error(y_test, pred)
+rmse = np.sqrt(mean_squared_error(y_test, pred))
+r2 = r2_score(y_test, pred)
+
+# 3. OUTPUT THE RESULTS (09/02 Task)
+print("--- Model Performance Metrics ---")
+print(f"MAE  (Mean Absolute Error): {mae:.2f}")
+print(f"RMSE (Root Mean Square Error): {rmse:.2f}")
+print(f"R2 Score (Accuracy): {r2:.4f}")
