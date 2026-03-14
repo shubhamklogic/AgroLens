@@ -207,5 +207,10 @@ python test_api.py
 - **Phase Completion**: Successfully concluded Week 6, with a clean, tested, and documented modular backend.
 - **Project Readiness**: Archived all experiment results in JSON format for the upcoming conference paper and final report.
 
+### Progress Update: 01/03/26
+- **Feature Expansion**: Successfully added Humidity and Soil Type as new input parameters.
+- **API Enhancement**: Updated fetch_weather.py to retrieve RH2M (Humidity) data from NASA POWER API.
+- **Model Compatibility**: Created dummy_model v2.0 to support 5-dimensional feature vectors.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)

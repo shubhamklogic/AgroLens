@@ -9,14 +9,16 @@ app = Flask(__name__)
 
 # -------------------------------------------------
 # MODEL INITIALIZATION
-# Loads the trained ML model once when the server starts
+# This function loads the trained ML model
+# when the backend server starts.
+# This avoids loading the model again and again.
 # -------------------------------------------------
 def load_trained_model():
 
-    # Path to model file
     model_path = os.path.join(os.path.dirname(__file__), "model.pkl")
 
     if os.path.exists(model_path):
+
         try:
             with open(model_path, "rb") as f:
                 print("✅ Model loaded successfully.")
@@ -31,24 +33,23 @@ def load_trained_model():
     return None
 
 
-# Load model once (global variable)
+# Global model variable
 model = load_trained_model()
 
 
 # -------------------------------------------------
 # DATA STORAGE FUNCTION
 # Saves prediction results into data/results.json
+# This helps for future analysis and model tracking
 # -------------------------------------------------
 def save_prediction_result(data):
 
     file_path = os.path.join(os.path.dirname(__file__), "data", "results.json")
 
-    # Ensure the data folder exists
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     results = []
 
-    # Read previous results if file exists
     if os.path.exists(file_path):
         try:
             with open(file_path, "r") as f:
@@ -59,21 +60,21 @@ def save_prediction_result(data):
     # Add timestamp
     data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Append new result
     results.append(data)
 
     try:
         with open(file_path, "w") as f:
             json.dump(results, f, indent=4)
 
-        print("📊 Prediction result saved to results.json")
+        print("📊 Prediction result saved")
 
     except Exception as e:
         print(f"⚠️ Error saving result: {e}")
 
 
 # -------------------------------------------------
-# PREDICTION API (Single Crop Yield Prediction)
+# PREDICTION API
+# Predicts yield for a specific crop
 # -------------------------------------------------
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -92,7 +93,123 @@ def predict():
     lat = user_data.get("lat")
     lon = user_data.get("lon")
 
+    # Soil type encoding (default = Loamy soil)
+    soil_type = user_data.get("soil_type", 2)
+
     # Validate soil pH
+    try:
+        soil_ph = float(user_data.get("soil_ph", 6.5))
+
+        if not (0 <= soil_ph <= 14):
+            raise ValueError
+
+    except:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid soil_ph."
+        }), 422
+
+    # Fetch weather data from NASA API
+    weather = get_weather_data(lat=lat, lon=lon)
+
+    if weather.get("status") == "error":
+        return jsonify({
+            "status": "error",
+            "message": "Weather service failed"
+        }), 502
+
+    avg_temp = weather["avg_temp"]
+    total_rain = weather["total_rain"]
+
+    # New weather variable
+    humidity = weather.get("humidity", 60.0)
+
+    # -------------------------------------------------
+    # PREPARE ML FEATURES
+    #
+    # Feature order must match training dataset:
+    #
+    # 1 Temperature
+    # 2 Rainfall
+    # 3 Humidity
+    # 4 Soil pH
+    # 5 Soil Type
+    # -------------------------------------------------
+    features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
+
+    # ML prediction
+    try:
+
+        if model and hasattr(model, "predict"):
+
+            predicted_yield = float(model.predict(features)[0])
+
+        else:
+            # Fallback logic if model is missing
+            predicted_yield = (
+                (avg_temp * 10)
+                + (total_rain * 5)
+                + (humidity * 2)
+                - (soil_ph * 2)
+                + (soil_type * 3)
+            )
+
+    except Exception as e:
+
+        return jsonify({
+            "status": "error",
+            "message": f"Prediction failed: {str(e)}"
+        }), 500
+
+    # Generate advisory message
+    advisory_data = generate_advisory(
+        predicted_yield,
+        avg_temp,
+        total_rain,
+        soil_ph,
+        "rainfall"
+    )
+
+    response = {
+        "status": "success",
+        "crop": crop,
+        "prediction": round(predicted_yield, 2),
+        "advisory": advisory_data["advice"],
+        "inputs": {
+            "temp": avg_temp,
+            "rain": total_rain,
+            "humidity": humidity,
+            "soil_ph": soil_ph,
+            "soil_type": soil_type
+        }
+    }
+
+    # Save prediction
+    save_prediction_result(response)
+
+    return jsonify(response)
+
+
+# -------------------------------------------------
+# SMART CROP RECOMMENDATION API
+# Compares multiple crops and selects best crop
+# -------------------------------------------------
+@app.route("/recommend", methods=["POST"])
+def recommend_crop():
+
+    user_data = request.get_json(silent=True) or {}
+
+    if "lat" not in user_data or "lon" not in user_data:
+        return jsonify({
+            "status": "error",
+            "message": "Missing coordinates."
+        }), 400
+
+    lat = user_data.get("lat")
+    lon = user_data.get("lon")
+
+    soil_type = user_data.get("soil_type", 2)
+
     try:
         soil_ph = float(user_data.get("soil_ph", 6.5))
 
@@ -111,103 +228,14 @@ def predict():
     if weather.get("status") == "error":
         return jsonify({
             "status": "error",
-            "message": "Weather service failed"
-        }), 502
-
-    avg_temp = weather["avg_temp"]
-    total_rain = weather["total_rain"]
-
-    # Prepare ML features
-    features = [[avg_temp, total_rain, soil_ph]]
-
-    # ML prediction
-    try:
-        if model and hasattr(model, "predict"):
-
-            predicted_yield = float(model.predict(features)[0])
-
-        else:
-            # Fallback logic if model missing
-            predicted_yield = (avg_temp * 10) + (total_rain * 5) - (soil_ph * 2)
-
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": f"Prediction failed: {str(e)}"
-        }), 500
-
-    # Generate advisory
-    advisory_data = generate_advisory(
-        predicted_yield,
-        avg_temp,
-        total_rain,
-        soil_ph,
-        "rainfall"
-    )
-
-    response = {
-        "status": "success",
-        "crop": crop,
-        "prediction": round(predicted_yield, 2),
-        "advisory": advisory_data["advice"],
-        "inputs": {
-            "temp": avg_temp,
-            "rain": total_rain,
-            "soil_ph": soil_ph
-        }
-    }
-
-    # Save result for future analysis
-    save_prediction_result(response)
-
-    return jsonify(response)
-
-
-# -------------------------------------------------
-# SMART CROP RECOMMENDATION API
-# Compares multiple crops and selects the best one
-# -------------------------------------------------
-@app.route("/recommend", methods=["POST"])
-def recommend_crop():
-
-    user_data = request.get_json(silent=True) or {}
-
-    # Validate coordinates
-    if "lat" not in user_data or "lon" not in user_data:
-        return jsonify({
-            "status": "error",
-            "message": "Missing coordinates."
-        }), 400
-
-    lat = user_data.get("lat")
-    lon = user_data.get("lon")
-
-    # Validate soil pH (added for safety)
-    try:
-        soil_ph = float(user_data.get("soil_ph", 6.5))
-
-        if not (0 <= soil_ph <= 14):
-            raise ValueError
-
-    except:
-        return jsonify({
-            "status": "error",
-            "message": "Invalid soil_ph."
-        }), 422
-
-    # Fetch weather
-    weather = get_weather_data(lat=lat, lon=lon)
-
-    if weather.get("status") == "error":
-        return jsonify({
-            "status": "error",
             "message": "Weather failed"
         }), 502
 
     avg_temp = weather["avg_temp"]
     total_rain = weather["total_rain"]
+    humidity = weather.get("humidity", 60.0)
 
-    # Crop options supported by system
+    # Crops supported by system
     possible_crops = [
         "Rice",
         "Wheat",
@@ -218,32 +246,29 @@ def recommend_crop():
 
     predictions = {}
 
-    # Multi-crop analysis
+    # Predict yield for each crop
     for crop in possible_crops:
 
-        features = [[avg_temp, total_rain, soil_ph]]
+        features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
 
         if model and hasattr(model, "predict"):
 
             yield_val = float(model.predict(features)[0])
 
         else:
-            # Dummy logic for demo purposes
-            if crop == "Rice":
-                yield_val = (avg_temp * 12) + (total_rain * 5)
 
-            elif crop == "Sugarcane":
-                yield_val = (avg_temp * 14) + (total_rain * 4)
-
-            else:
-                yield_val = (avg_temp * 10) + (total_rain * 4)
+            yield_val = (
+                (avg_temp * 10)
+                + (total_rain * 4)
+                + (humidity * 2)
+                + (soil_type * 3)
+            )
 
         predictions[crop] = round(yield_val, 2)
 
-    # Select crop with highest predicted yield
+    # Select best crop
     best_crop = max(predictions, key=predictions.get)
 
-    # Advisory explanation
     advice_map = {
         "Rice": "High rainfall detected; perfect for Rice.",
         "Wheat": "Cooler temperature detected; Wheat is ideal.",
@@ -255,22 +280,22 @@ def recommend_crop():
         best_crop,
         "Optimal crop for current scenario."
     )
-    response = {
-    "status": "success",
-    "recommended_crop": best_crop,
-    "expected_yield": predictions[best_crop],
-    "advisory": advisory_message,
-    "all_predictions": predictions,
-    "environment": {
-        "temp": avg_temp,
-        "rain": total_rain
-    }
-}
 
-    # Save result to results.json
+    response = {
+        "status": "success",
+        "recommended_crop": best_crop,
+        "expected_yield": predictions[best_crop],
+        "advisory": advisory_message,
+        "all_predictions": predictions,
+        "environment": {
+            "temp": avg_temp,
+            "rain": total_rain,
+            "humidity": humidity
+        }
+    }
+
     save_prediction_result(response)
 
-    # Return response to client
     return jsonify(response)
 
 
