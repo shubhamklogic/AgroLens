@@ -127,5 +127,75 @@ python test_api.py
 - **System Documentation**: Finalized the explanation of the "Input -> Processing -> Prediction" pipeline.
 - **Milestone Reached**: Completed—ML model connected and API fully operational.
 
+### Progress Update: 07/02/26
+- **Evaluation Research**: Studied key performance metrics for regression models, including Mean Absolute Error (MAE), Root Mean Square Error (RMSE), and R-squared (R2) score.
+- **Metric Definitions**: Established the mathematical basis for 'average mistake' (MAE) and 'large error penalties' (RMSE) to be used in the upcoming Evaluation API.
+- **Viva Preparation**: Formulated technical explanations for model reliability and accuracy quantification.
+
+### Progress Update: 08/02/26
+- **Data Segregation**: Implemented the `train_test_split` logic to isolate training and testing datasets.
+- **Ratio Configuration**: Configured a 80:20 split ratio to reserve 20% of the dataset for unbiased model evaluation.
+- **Validation Readiness**: Established the foundational variables (X_test, y_test) required for calculating MAE and R2 scores.
+
+### Progress Update: 09/02/26
+- **Performance Quantification**: Implemented the calculation of MAE, RMSE, and R2 score using the Scikit-Learn metrics module.
+- **Model Inference**: Executed a prediction run on the isolated testing dataset (X_test) to evaluate simulated model accuracy.
+- **Data Validation**: Verified the output values to ensure they fall within expected statistical ranges for agricultural yield prediction.
+
+### Progress Update: 10/02/26
+- **Data Persistence**: Implemented logic to export model evaluation metrics (MAE, RMSE, R2) into a permanent JSON storage format.
+- **Storage Strategy**: Configured the backend to store performance results locally, enabling fast retrieval for reporting and API consumption.
+- **Reporting Readiness**: Standardized the metric dictionary to include timestamps for version tracking of model accuracy.
+
+### Progress Update: 11/02/26
+- **API Expansion**: Created the `/metrics` GET endpoint to expose model performance data.
+- **Resource Integration**: Linked the Flask route to the static `metrics.json` storage for efficient data serving.
+- **Frontend Readiness**: Enabled programmatic access to accuracy scores (MAE, RMSE, R2) for dashboard visualization.
+
+### Progress Update: 12/02/26
+- **Final Validation**: Successfully tested the integration of the Prediction API and the Metrics API.
+- **Week 4 Milestone**: Completed the model evaluation cycle (Split -> Calculate -> Save -> Serve).
+- **Backend Status**: Evaluation results are now accessible via a GET request to the `/metrics` endpoint.
+
+### Progress Update: 16/02/26
+- **Explainability Engine**: Integrated the SHAP TreeExplainer to interpret model decision-making.
+- **Value Generation**: Successfully calculated SHAP values for the training dataset to identify feature-level contributions.
+- **Transparency Milestone**: Established the mathematical basis for explaining why the model predicts specific yield values.
+
+### Progress Update: 17/02/26
+- **Feature Importance Extraction**: Calculated the mean absolute SHAP values to rank input features by their predictive power.
+- **Data Insights**: Identified the primary drivers of crop yield within the simulated dataset (e.g., Temperature vs. Rainfall).
+- **Metric Enhancement**: Updated the automated reporting pipeline to include feature importance scores in the final evaluation output.
+
+### Progress Update: 18/02/26
+- **Advisory Logic Implementation**: Developed a rule-based engine to convert numerical ML outputs into agricultural recommendations.
+- **Feature-Driven Advice**: Integrated SHAP feature importance to ground recommendations in specific environmental factors.
+- **Insight Generation**: Successfully simulated the transition from 'Black Box' results to actionable farming insights.
+
+### Progress Update: 19/02/26
+- **XAI Phase Completed**: Successfully integrated SHAP-based feature importance into the prediction pipeline.
+- **Advisory API**: Launched the `/advisory` endpoint to provide data-driven recommendations to farmers.
+- **Logic Validation**: Verified the advisory engine using POST requests/test_api.py, confirming accurate feature-to-advice mapping.
+
+### Progress Update: 21/02/26
+- **Project Restructuring**: Refactored the backend directory into a modular hierarchy for improved maintainability.
+- **Code Decoupling**: Migrated weather-fetching utilities and model loading logic into separate modules.
+- **Organization Milestone**: Established a professional folder structure including dedicated directories for data and utility functions.
+
+### Progress Update: 22/02/26
+- **API Integration Testing**: Successfully verified all backend endpoints (/predict, /metrics, /advisory) using the modular project structure.
+- **Response Validation**: Confirmed that the dummy model correctly serves prediction and advisory logic via POST requests.
+- **System Stability**: Ensured that moving files to utils/ and data/ did not break endpoint connectivity.
+
+### Progress Update: 23/02/26
+- **Error Handling Implementation**: Added comprehensive validation logic to catch missing inputs and invalid data types.
+- **System Resilience**: Integrated exception handling for external weather API calls to prevent backend downtime during service outages.
+- **Response Standardization**: Configured meaningful HTTP status codes (400, 422, 502) for all error scenarios.
+
+### Progress Update: 24/02/26
+- **Data Persistence**: Integrated a logging mechanism to store prediction outputs and metadata in `results.json`.
+- **Reporting Readiness**: Established a pipeline to collect experimental results for use in the final project report and academic publications.
+- **Experiment Tracking**: Configured automated timestamping for all logged predictions to maintain a clear audit trail.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
