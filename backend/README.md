@@ -212,5 +212,10 @@ python test_api.py
 - **API Enhancement**: Updated fetch_weather.py to retrieve RH2M (Humidity) data from NASA POWER API.
 - **Model Compatibility**: Created dummy_model v2.0 to support 5-dimensional feature vectors.
 
+### Progress Update: 02/03/26
+- **Model Retraining (V2.0)**: Successfully updated the ML model to support the expanded 5-feature vector.
+- **Enhanced Inference Logic**: Integrated humidity and soil-type weights into the prediction engine to simulate higher reliability.
+- **Serialization**: Saved the updated model as model.pkl using the pickle module.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)

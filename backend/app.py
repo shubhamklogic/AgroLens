@@ -9,9 +9,7 @@ app = Flask(__name__)
 
 # -------------------------------------------------
 # MODEL INITIALIZATION
-# This function loads the trained ML model
-# when the backend server starts.
-# This avoids loading the model again and again.
+# Loads trained ML model when server starts
 # -------------------------------------------------
 def load_trained_model():
 
@@ -39,8 +37,7 @@ model = load_trained_model()
 
 # -------------------------------------------------
 # DATA STORAGE FUNCTION
-# Saves prediction results into data/results.json
-# This helps for future analysis and model tracking
+# Saves prediction results for analysis
 # -------------------------------------------------
 def save_prediction_result(data):
 
@@ -57,7 +54,6 @@ def save_prediction_result(data):
         except Exception:
             results = []
 
-    # Add timestamp
     data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     results.append(data)
@@ -81,7 +77,6 @@ def predict():
 
     user_data = request.get_json(silent=True) or {}
 
-    # Validate coordinates
     if "lat" not in user_data or "lon" not in user_data:
         return jsonify({
             "status": "error",
@@ -93,10 +88,8 @@ def predict():
     lat = user_data.get("lat")
     lon = user_data.get("lon")
 
-    # Soil type encoding (default = Loamy soil)
     soil_type = user_data.get("soil_type", 2)
 
-    # Validate soil pH
     try:
         soil_ph = float(user_data.get("soil_ph", 6.5))
 
@@ -109,7 +102,6 @@ def predict():
             "message": "Invalid soil_ph."
         }), 422
 
-    # Fetch weather data from NASA API
     weather = get_weather_data(lat=lat, lon=lon)
 
     if weather.get("status") == "error":
@@ -120,24 +112,14 @@ def predict():
 
     avg_temp = weather["avg_temp"]
     total_rain = weather["total_rain"]
-
-    # New weather variable
     humidity = weather.get("humidity", 60.0)
 
     # -------------------------------------------------
-    # PREPARE ML FEATURES
-    #
-    # Feature order must match training dataset:
-    #
-    # 1 Temperature
-    # 2 Rainfall
-    # 3 Humidity
-    # 4 Soil pH
-    # 5 Soil Type
+    # FEATURE VECTOR FOR MODEL
+    # Order must match training dataset
     # -------------------------------------------------
     features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
 
-    # ML prediction
     try:
 
         if model and hasattr(model, "predict"):
@@ -145,14 +127,29 @@ def predict():
             predicted_yield = float(model.predict(features)[0])
 
         else:
-            # Fallback logic if model is missing
-            predicted_yield = (
-                (avg_temp * 10)
-                + (total_rain * 5)
-                + (humidity * 2)
-                - (soil_ph * 2)
-                + (soil_type * 3)
-            )
+            # -------------------------------------------------
+            # IMPROVED V2 MOCK LOGIC
+            # Simulates a retrained model using humidity
+            # and soil type for better realism
+            # -------------------------------------------------
+
+            base_yield = (avg_temp * 10) + (total_rain * 5)
+
+            # Humidity influence
+            humidity_impact = (humidity * 1.5)
+
+            # Soil type effect
+            # 1 = Sandy
+            # 2 = Loamy (best)
+            # 3 = Clayey
+            soil_impact = 500 if soil_type == 2 else 200
+
+            # pH penalty
+            ph_penalty = abs(7.0 - soil_ph) * 50
+
+            predicted_yield = base_yield + humidity_impact + soil_impact - ph_penalty
+
+            print("DEBUG: Using Improved V2 Mock logic")
 
     except Exception as e:
 
@@ -161,7 +158,6 @@ def predict():
             "message": f"Prediction failed: {str(e)}"
         }), 500
 
-    # Generate advisory message
     advisory_data = generate_advisory(
         predicted_yield,
         avg_temp,
@@ -184,7 +180,6 @@ def predict():
         }
     }
 
-    # Save prediction
     save_prediction_result(response)
 
     return jsonify(response)
@@ -192,7 +187,6 @@ def predict():
 
 # -------------------------------------------------
 # SMART CROP RECOMMENDATION API
-# Compares multiple crops and selects best crop
 # -------------------------------------------------
 @app.route("/recommend", methods=["POST"])
 def recommend_crop():
@@ -222,7 +216,6 @@ def recommend_crop():
             "message": "Invalid soil_ph."
         }), 422
 
-    # Fetch weather data
     weather = get_weather_data(lat=lat, lon=lon)
 
     if weather.get("status") == "error":
@@ -235,7 +228,6 @@ def recommend_crop():
     total_rain = weather["total_rain"]
     humidity = weather.get("humidity", 60.0)
 
-    # Crops supported by system
     possible_crops = [
         "Rice",
         "Wheat",
@@ -246,7 +238,6 @@ def recommend_crop():
 
     predictions = {}
 
-    # Predict yield for each crop
     for crop in possible_crops:
 
         features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
@@ -256,17 +247,22 @@ def recommend_crop():
             yield_val = float(model.predict(features)[0])
 
         else:
+            # Same improved V2 fallback logic
 
-            yield_val = (
-                (avg_temp * 10)
-                + (total_rain * 4)
-                + (humidity * 2)
-                + (soil_type * 3)
-            )
+            base_yield = (avg_temp * 10) + (total_rain * 5)
+
+            humidity_impact = (humidity * 1.5)
+
+            soil_impact = 500 if soil_type == 2 else 200
+
+            ph_penalty = abs(7.0 - soil_ph) * 50
+
+            yield_val = base_yield + humidity_impact + soil_impact - ph_penalty
+
+            print("DEBUG: Using Improved V2 Mock logic")
 
         predictions[crop] = round(yield_val, 2)
 
-    # Select best crop
     best_crop = max(predictions, key=predictions.get)
 
     advice_map = {
@@ -301,7 +297,6 @@ def recommend_crop():
 
 # -------------------------------------------------
 # METRICS API
-# Returns model evaluation metrics
 # -------------------------------------------------
 @app.route("/metrics", methods=["GET"])
 def metrics_api():
@@ -325,7 +320,6 @@ def metrics_api():
 
 # -------------------------------------------------
 # ADVISORY FUNCTION
-# Generates simple farming advice
 # -------------------------------------------------
 def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_feature):
 
@@ -349,7 +343,6 @@ def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_featur
 
 # -------------------------------------------------
 # WEATHER API
-# Allows frontend to fetch weather directly
 # -------------------------------------------------
 @app.route("/weather", methods=["GET"])
 def weather_api():
