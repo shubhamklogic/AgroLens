@@ -90,5 +90,33 @@
             "soil": 3
         },
         "timestamp": "2026-03-14 15:47:57"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 772.44,
+        "advisory": "Low rainfall. Increase irrigation.",
+        "inputs": {
+            "temp": 28.094,
+            "rain": 0.0,
+            "humidity": 21.002,
+            "ph": 6.2,
+            "soil": 2
+        },
+        "timestamp": "2026-03-14 15:55:46"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 472.44,
+        "advisory": "Low rainfall. Increase irrigation.",
+        "inputs": {
+            "temp": 28.094,
+            "rain": 0.0,
+            "humidity": 21.002,
+            "ph": 6.2,
+            "soil": 3
+        },
+        "timestamp": "2026-03-14 15:56:06"
     }
 ]

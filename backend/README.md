@@ -222,5 +222,10 @@ python test_api.py
 - **Input Validation**: Added robust error handling for categorical soil data.
 - **End-to-End Verification**: Confirmed backend integration with updated fetch_weather.py and dummy_model v2.0.
 
+### Progress Update: 04/03/26
+- **Model Comparison**: Completed comparative testing between V1 (3 features) and V2 (5 features).
+- **Research Data**: Generated performance tables for the upcoming conference paper.
+- **Validation**: Confirmed that Humidity and Soil Type integration significantly impacts the final yield variance.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
