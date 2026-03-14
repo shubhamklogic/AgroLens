@@ -196,6 +196,32 @@ def advisory_api():
             "message": str(e)
         }), 500
 
+# -------------------------------------------------
+# WEATHER API (New Endpoint)
+# -------------------------------------------------
+@app.route("/weather", methods=["GET"])
+def weather_api():
+    # Extract latitude and longitude from the URL parameters
+    lat = request.args.get("lat", default=28.6, type=float)
+    lon = request.args.get("lon", default=77.2, type=float)
+
+    # Use your existing helper function to get data
+    weather = get_weather_data(lat=lat, lon=lon)
+
+    if weather["status"] == "success":
+        return jsonify({
+            "status": "success",
+            "location": {"lat": lat, "lon": lon},
+            "data": {
+                "avg_temp": weather["avg_temp"],
+                "total_rain": weather["total_rain"]
+            }
+        }), 200
+    else:
+        return jsonify({
+            "status": "error",
+            "message": "Weather data could not be retrieved"
+        }), 500
 
 # -------------------------------------------------
 # RUN SERVER
