@@ -192,5 +192,10 @@ python test_api.py
 - **System Resilience**: Integrated exception handling for external weather API calls to prevent backend downtime during service outages.
 - **Response Standardization**: Configured meaningful HTTP status codes (400, 422, 502) for all error scenarios.
 
+### Progress Update: 24/02/26
+- **Data Persistence**: Integrated a logging mechanism to store prediction outputs and metadata in `results.json`.
+- **Reporting Readiness**: Established a pipeline to collect experimental results for use in the final project report and academic publications.
+- **Experiment Tracking**: Configured automated timestamping for all logged predictions to maintain a clear audit trail.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)

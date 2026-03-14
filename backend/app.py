@@ -34,6 +34,60 @@ model = load_trained_model()
 
 
 # -------------------------------------------------
+# DATA STORAGE FUNCTION
+# Saves every prediction result to results.json
+# This acts like a log file for all predictions
+# -------------------------------------------------
+def save_prediction_result(data):
+    """
+    Saves the prediction inputs and outputs to a JSON file.
+    This is useful for:
+    - reporting
+    - evaluation
+    - dataset creation for future ML training
+    """
+
+    # Path to data/results.json
+    file_path = os.path.join(os.path.dirname(__file__), "data", "results.json")
+
+    # List that will hold all past prediction records
+    results = []
+
+    # -------------------------------------------------
+    # STEP 1: READ EXISTING FILE (if it exists)
+    # This ensures we don't overwrite old predictions
+    # -------------------------------------------------
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r") as f:
+                results = json.load(f)
+        except Exception:
+            # If file is corrupted or empty
+            results = []
+
+    # -------------------------------------------------
+    # STEP 2: ADD TIMESTAMP
+    # Helps track when the prediction was made
+    # -------------------------------------------------
+    data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Add new prediction entry
+    results.append(data)
+
+    # -------------------------------------------------
+    # STEP 3: SAVE BACK TO FILE
+    # -------------------------------------------------
+    try:
+        with open(file_path, "w") as f:
+            json.dump(results, f, indent=4)
+
+        print("📊 Prediction result saved to results.json")
+
+    except Exception as e:
+        print(f"⚠️ Error saving result: {e}")
+
+
+# -------------------------------------------------
 # PREDICTION API
 # -------------------------------------------------
 @app.route("/predict", methods=["POST"])
@@ -44,14 +98,12 @@ def predict():
 
     # -------------------------------------------------
     # STEP 1: INPUT VALIDATION (Coordinates Required)
-    # This prevents errors if the user forgets to send
-    # latitude or longitude in the request.
     # -------------------------------------------------
     if "lat" not in user_data or "lon" not in user_data:
         return jsonify({
             "status": "error",
             "message": "Missing required coordinates: 'lat' and 'lon' are required."
-        }), 400  # 400 = Bad Request
+        }), 400
 
     # Extract input parameters
     crop = user_data.get("crop", "wheat").capitalize()
@@ -59,9 +111,8 @@ def predict():
     lon = user_data.get("lon")
 
     # -------------------------------------------------
-    # STEP 3: DATA TYPE VALIDATION
-    # Ensures soil_ph is numeric and within valid range
-    # (pH scale is always between 0 and 14)
+    # STEP 2: DATA TYPE VALIDATION
+    # Validates soil pH value
     # -------------------------------------------------
     try:
         soil_ph = float(user_data.get("soil_ph", 6.5))
@@ -73,12 +124,11 @@ def predict():
         return jsonify({
             "status": "error",
             "message": "Invalid 'soil_ph'. Please provide a numeric value between 0 and 14."
-        }), 422  # 422 = Unprocessable Entity
+        }), 422
 
     # -------------------------------------------------
-    # STEP 2: ROBUST WEATHER SERVICE HANDLING
-    # Protects the system if the external weather API
-    # crashes or fails to respond.
+    # STEP 3: WEATHER SERVICE CALL
+    # Fetch weather data using latitude and longitude
     # -------------------------------------------------
     try:
         weather = get_weather_data(lat=lat, lon=lon)
@@ -87,19 +137,22 @@ def predict():
         return jsonify({
             "status": "error",
             "message": f"Critical failure connecting to weather service: {str(e)}"
-        }), 503  # 503 = Service Unavailable
+        }), 503
 
-    # Handle error returned from weather service
+    # Handle weather API failure
     if weather.get("status") == "error":
         return jsonify({
             "status": "error",
             "message": "Weather service returned an error. Please check coordinates."
-        }), 502  # 502 = Bad Gateway
+        }), 502
 
     avg_temp = weather["avg_temp"]
     total_rain = weather["total_rain"]
 
-    # Prepare features for model
+    # -------------------------------------------------
+    # PREPARE FEATURES FOR ML MODEL
+    # Format expected by sklearn model
+    # -------------------------------------------------
     features = [[avg_temp, total_rain, soil_ph]]
 
     # -------------------------------------------------
@@ -110,7 +163,7 @@ def predict():
             prediction = model.predict(features)
             predicted_yield = float(prediction[0])
         else:
-            # fallback prediction
+            # fallback prediction logic if model is missing
             predicted_yield = (avg_temp * 10) + (total_rain * 5) - (soil_ph * 2)
             print("DEBUG: Using Dummy/Mock prediction logic")
 
@@ -133,12 +186,32 @@ def predict():
         top_feature
     )
 
-    return jsonify({
+    # -------------------------------------------------
+    # FINAL RESPONSE PAYLOAD
+    # This will be returned to the client
+    # -------------------------------------------------
+    response_payload = {
         "status": "success",
+        "crop": crop,
+        "inputs": {
+            "lat": lat,
+            "lon": lon,
+            "temp": avg_temp,
+            "rain": total_rain,
+            "soil_ph": soil_ph
+        },
         "prediction": round(predicted_yield, 2),
-        "advisory": advisory_data["advice"],
-        "reasoning": f"Based on {advisory_data['primary_factor']} importance"
-    })
+        "advisory": advisory_data["advice"]
+    }
+
+    # -------------------------------------------------
+    # SAVE PREDICTION RESULT
+    # Logs the prediction into data/results.json
+    # Useful for evaluation and reporting
+    # -------------------------------------------------
+    save_prediction_result(response_payload)
+
+    return jsonify(response_payload)
 
 
 # -------------------------------------------------
