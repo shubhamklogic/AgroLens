@@ -151,5 +151,24 @@
             "soil": 2
         },
         "timestamp": "2026-03-14 18:21:03"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 677.13,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 647.13,
+            "Wheat": 607.13,
+            "Maize": 587.13,
+            "Sugarcane": 677.13,
+            "Millets": 567.13
+        },
+        "environment": {
+            "temp": 30.252,
+            "rain": 0.02,
+            "humidity": 43.004
+        },
+        "timestamp": "2026-03-14 18:30:47"
     }
 ]
