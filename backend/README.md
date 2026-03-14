@@ -217,5 +217,10 @@ python test_api.py
 - **Enhanced Inference Logic**: Integrated humidity and soil-type weights into the prediction engine to simulate higher reliability.
 - **Serialization**: Saved the updated model as model.pkl using the pickle module.
 
+### Progress Update: 03/03/26
+- **API Architecture Upgrade**: Updated /predict and /recommend endpoints to support 5-dimensional feature vectors.
+- **Input Validation**: Added robust error handling for categorical soil data.
+- **End-to-End Verification**: Confirmed backend integration with updated fetch_weather.py and dummy_model v2.0.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)

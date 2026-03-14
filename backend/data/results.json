@@ -24,5 +24,71 @@
             "soil_ph": 6.5
         },
         "timestamp": "2026-03-14 12:48:33"
+    },
+    {
+        "status": "success",
+        "crop": "Wheat",
+        "prediction": 787.44,
+        "advisory": "Low rainfall. Increase irrigation.",
+        "inputs": {
+            "temp": 28.094,
+            "rain": 0.0,
+            "humidity": 21.002,
+            "soil_ph": 6.5,
+            "soil_type": 2
+        },
+        "timestamp": "2026-03-14 15:25:56"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Rice",
+        "expected_yield": 787.44,
+        "advisory": "High rainfall detected; perfect for Rice.",
+        "all_predictions": {
+            "Rice": 787.44,
+            "Wheat": 787.44,
+            "Maize": 787.44,
+            "Sugarcane": 787.44,
+            "Millets": 787.44
+        },
+        "environment": {
+            "temp": 28.094,
+            "rain": 0.0,
+            "humidity": 21.002
+        },
+        "timestamp": "2026-03-14 15:26:52"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 937.44,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 907.44,
+            "Wheat": 867.44,
+            "Maize": 847.44,
+            "Sugarcane": 937.44,
+            "Millets": 827.44
+        },
+        "environment": {
+            "temp": 28.094,
+            "rain": 0.0,
+            "humidity": 21.002
+        },
+        "timestamp": "2026-03-14 15:47:03"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 527.13,
+        "advisory": "Low rainfall. Increase irrigation.",
+        "inputs": {
+            "temp": 30.252,
+            "rain": 0.02,
+            "humidity": 43.004,
+            "ph": 6.2,
+            "soil": 3
+        },
+        "timestamp": "2026-03-14 15:47:57"
     }
 ]
