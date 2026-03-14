@@ -6,7 +6,7 @@ The **AgroLens backend** is an intelligent decision-support system designed for 
 
 It uses **Prescriptive AI** to help farmers decide which crop to grow based on **real-time environmental data** such as weather and soil conditions.
 
-The backend processes GPS coordinates, fetches climate data, runs machine learning predictions, and returns the best crop recommendation
+The backend processes GPS coordinates, fetches climate data, runs machine learning predictions, and returns the best crop recommendation.
 
 ---
 
