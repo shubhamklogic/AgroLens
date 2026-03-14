@@ -188,7 +188,7 @@ python test_api.py
 - **System Stability**: Ensured that moving files to utils/ and data/ did not break endpoint connectivity.
 
 ### Progress Update: 23/02/26
-- **Error Handling Implementation**:  comprehensive validation logic to catch missing inputs and invalid data types.
+- **Error Handling Implementation**: Added comprehensive validation logic to catch missing inputs and invalid data types.
 - **System Resilience**: Integrated exception handling for external weather API calls to prevent backend downtime during service outages.
 - **Response Standardization**: Configured meaningful HTTP status codes (400, 422, 502) for all error scenarios.
 
