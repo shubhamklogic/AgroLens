@@ -127,3 +127,4 @@ AgroLens combines:
 * Soil information
 * Machine learning predictions
 
+to provide **data-driven crop recommendations for farmers.**
