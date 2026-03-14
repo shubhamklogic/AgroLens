@@ -1,0 +1,18 @@
+{
+    "experiment_date": "2026-03-05",
+    "project_phase": "Week 7 - Model Reliability Improvement",
+    "model_comparison": {
+        "v1_baseline": {
+            "features_count": 3,
+            "features_list": ["temperature", "rainfall", "soil_ph"],
+            "simulated_rmse": 480
+        },
+        "v2_improved": {
+            "features_count": 5,
+            "features_list": ["temperature", "rainfall", "humidity", "soil_ph", "soil_type"],
+            "simulated_rmse": 350
+        }
+    },
+    "reliability_gain": "27% reduction in RMSE (simulated)",
+    "key_findings": "The integration of humidity and soil type reduced variance in yield predictions."
+}
