@@ -42,20 +42,59 @@ def predict():
     # Get JSON data from request body
     user_data = request.get_json(silent=True) or {}
 
-    # Extract input parameters
-    crop = user_data.get("crop", "wheat").capitalize()
-    lat = user_data.get("lat", 28.6)
-    lon = user_data.get("lon", 77.2)
-    soil_ph = user_data.get("soil_ph", 6.5)
-
-    # Fetch weather data
-    weather = get_weather_data(lat=lat, lon=lon)
-
-    if weather["status"] == "error":
+    # -------------------------------------------------
+    # STEP 1: INPUT VALIDATION (Coordinates Required)
+    # This prevents errors if the user forgets to send
+    # latitude or longitude in the request.
+    # -------------------------------------------------
+    if "lat" not in user_data or "lon" not in user_data:
         return jsonify({
             "status": "error",
-            "message": "Weather service unavailable"
-        }), 500
+            "message": "Missing required coordinates: 'lat' and 'lon' are required."
+        }), 400  # 400 = Bad Request
+
+    # Extract input parameters
+    crop = user_data.get("crop", "wheat").capitalize()
+    lat = user_data.get("lat")
+    lon = user_data.get("lon")
+
+    # -------------------------------------------------
+    # STEP 3: DATA TYPE VALIDATION
+    # Ensures soil_ph is numeric and within valid range
+    # (pH scale is always between 0 and 14)
+    # -------------------------------------------------
+    try:
+        soil_ph = float(user_data.get("soil_ph", 6.5))
+
+        if not (0 <= soil_ph <= 14):
+            raise ValueError("pH must be between 0 and 14")
+
+    except (ValueError, TypeError):
+        return jsonify({
+            "status": "error",
+            "message": "Invalid 'soil_ph'. Please provide a numeric value between 0 and 14."
+        }), 422  # 422 = Unprocessable Entity
+
+    # -------------------------------------------------
+    # STEP 2: ROBUST WEATHER SERVICE HANDLING
+    # Protects the system if the external weather API
+    # crashes or fails to respond.
+    # -------------------------------------------------
+    try:
+        weather = get_weather_data(lat=lat, lon=lon)
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": f"Critical failure connecting to weather service: {str(e)}"
+        }), 503  # 503 = Service Unavailable
+
+    # Handle error returned from weather service
+    if weather.get("status") == "error":
+        return jsonify({
+            "status": "error",
+            "message": "Weather service returned an error. Please check coordinates."
+        }), 502  # 502 = Bad Gateway
 
     avg_temp = weather["avg_temp"]
     total_rain = weather["total_rain"]
@@ -84,7 +123,6 @@ def predict():
     # -------------------------------------------------
     # ADVISORY LOGIC
     # -------------------------------------------------
-
     top_feature = "rainfall"
 
     advisory_data = generate_advisory(
@@ -196,16 +234,18 @@ def advisory_api():
             "message": str(e)
         }), 500
 
+
 # -------------------------------------------------
 # WEATHER API (New Endpoint)
 # -------------------------------------------------
 @app.route("/weather", methods=["GET"])
 def weather_api():
-    # Extract latitude and longitude from the URL parameters
+
+    # Extract latitude and longitude from URL parameters
     lat = request.args.get("lat", default=28.6, type=float)
     lon = request.args.get("lon", default=77.2, type=float)
 
-    # Use your existing helper function to get data
+    # Call weather helper function
     weather = get_weather_data(lat=lat, lon=lon)
 
     if weather["status"] == "success":
@@ -222,6 +262,7 @@ def weather_api():
             "status": "error",
             "message": "Weather data could not be retrieved"
         }), 500
+
 
 # -------------------------------------------------
 # RUN SERVER
