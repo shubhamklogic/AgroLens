@@ -137,5 +137,19 @@
             "humidity": 21.002
         },
         "timestamp": "2026-03-14 16:07:01"
+    },
+    {
+        "status": "success",
+        "crop": "Maize",
+        "prediction": 826.04,
+        "advisory": "Low rainfall. Increase irrigation.",
+        "inputs": {
+            "temp": 28.324,
+            "rain": 0.0,
+            "humidity": 35.202,
+            "ph": 6.8,
+            "soil": 2
+        },
+        "timestamp": "2026-03-14 18:21:03"
     }
 ]
