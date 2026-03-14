@@ -9,11 +9,11 @@ app = Flask(__name__)
 
 # -------------------------------------------------
 # MODEL INITIALIZATION
-# Loads the trained ML model from model.pkl
+# Loads the trained ML model once when the server starts
 # -------------------------------------------------
 def load_trained_model():
 
-    # Path to model.pkl in project root
+    # Path to model file
     model_path = os.path.join(os.path.dirname(__file__), "model.pkl")
 
     if os.path.exists(model_path):
@@ -21,62 +21,47 @@ def load_trained_model():
             with open(model_path, "rb") as f:
                 print("✅ Model loaded successfully.")
                 return pickle.load(f)
+
         except Exception as e:
             print(f"⚠️ Error loading model file: {e}")
+
     else:
-        print("⚠️ model.pkl not found. Using internal fallback logic.")
+        print("⚠️ model.pkl not found. Using fallback logic.")
 
     return None
 
 
-# Load model once when server starts
+# Load model once (global variable)
 model = load_trained_model()
 
 
 # -------------------------------------------------
 # DATA STORAGE FUNCTION
-# Saves every prediction result to results.json
-# This acts like a log file for all predictions
+# Saves prediction results into data/results.json
 # -------------------------------------------------
 def save_prediction_result(data):
-    """
-    Saves the prediction inputs and outputs to a JSON file.
-    This is useful for:
-    - reporting
-    - evaluation
-    - dataset creation for future ML training
-    """
 
-    # Path to data/results.json
     file_path = os.path.join(os.path.dirname(__file__), "data", "results.json")
 
-    # List that will hold all past prediction records
+    # Ensure the data folder exists
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
     results = []
 
-    # -------------------------------------------------
-    # STEP 1: READ EXISTING FILE (if it exists)
-    # This ensures we don't overwrite old predictions
-    # -------------------------------------------------
+    # Read previous results if file exists
     if os.path.exists(file_path):
         try:
             with open(file_path, "r") as f:
                 results = json.load(f)
         except Exception:
-            # If file is corrupted or empty
             results = []
 
-    # -------------------------------------------------
-    # STEP 2: ADD TIMESTAMP
-    # Helps track when the prediction was made
-    # -------------------------------------------------
+    # Add timestamp
     data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Add new prediction entry
+    # Append new result
     results.append(data)
 
-    # -------------------------------------------------
-    # STEP 3: SAVE BACK TO FILE
-    # -------------------------------------------------
     try:
         with open(file_path, "w") as f:
             json.dump(results, f, indent=4)
@@ -88,182 +73,248 @@ def save_prediction_result(data):
 
 
 # -------------------------------------------------
-# PREDICTION API
+# PREDICTION API (Single Crop Yield Prediction)
 # -------------------------------------------------
 @app.route("/predict", methods=["POST"])
 def predict():
 
-    # Get JSON data from request body
     user_data = request.get_json(silent=True) or {}
 
-    # -------------------------------------------------
-    # STEP 1: INPUT VALIDATION (Coordinates Required)
-    # -------------------------------------------------
+    # Validate coordinates
     if "lat" not in user_data or "lon" not in user_data:
         return jsonify({
             "status": "error",
-            "message": "Missing required coordinates: 'lat' and 'lon' are required."
+            "message": "Missing lat/lon."
         }), 400
 
-    # Extract input parameters
     crop = user_data.get("crop", "wheat").capitalize()
+
     lat = user_data.get("lat")
     lon = user_data.get("lon")
 
-    # -------------------------------------------------
-    # STEP 2: DATA TYPE VALIDATION
-    # Validates soil pH value
-    # -------------------------------------------------
+    # Validate soil pH
     try:
         soil_ph = float(user_data.get("soil_ph", 6.5))
 
         if not (0 <= soil_ph <= 14):
-            raise ValueError("pH must be between 0 and 14")
+            raise ValueError
 
-    except (ValueError, TypeError):
+    except:
         return jsonify({
             "status": "error",
-            "message": "Invalid 'soil_ph'. Please provide a numeric value between 0 and 14."
+            "message": "Invalid soil_ph."
         }), 422
 
-    # -------------------------------------------------
-    # STEP 3: WEATHER SERVICE CALL
-    # Fetch weather data using latitude and longitude
-    # -------------------------------------------------
-    try:
-        weather = get_weather_data(lat=lat, lon=lon)
+    # Fetch weather data
+    weather = get_weather_data(lat=lat, lon=lon)
 
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": f"Critical failure connecting to weather service: {str(e)}"
-        }), 503
-
-    # Handle weather API failure
     if weather.get("status") == "error":
         return jsonify({
             "status": "error",
-            "message": "Weather service returned an error. Please check coordinates."
+            "message": "Weather service failed"
         }), 502
 
     avg_temp = weather["avg_temp"]
     total_rain = weather["total_rain"]
 
-    # -------------------------------------------------
-    # PREPARE FEATURES FOR ML MODEL
-    # Format expected by sklearn model
-    # -------------------------------------------------
+    # Prepare ML features
     features = [[avg_temp, total_rain, soil_ph]]
 
-    # -------------------------------------------------
-    # MODEL PREDICTION SECTION
-    # -------------------------------------------------
+    # ML prediction
     try:
         if model and hasattr(model, "predict"):
-            prediction = model.predict(features)
-            predicted_yield = float(prediction[0])
+
+            predicted_yield = float(model.predict(features)[0])
+
         else:
-            # fallback prediction logic if model is missing
+            # Fallback logic if model missing
             predicted_yield = (avg_temp * 10) + (total_rain * 5) - (soil_ph * 2)
-            print("DEBUG: Using Dummy/Mock prediction logic")
 
     except Exception as e:
         return jsonify({
             "status": "error",
-            "message": f"Prediction failed: {e}"
+            "message": f"Prediction failed: {str(e)}"
         }), 500
 
-    # -------------------------------------------------
-    # ADVISORY LOGIC
-    # -------------------------------------------------
-    top_feature = "rainfall"
-
+    # Generate advisory
     advisory_data = generate_advisory(
         predicted_yield,
         avg_temp,
         total_rain,
         soil_ph,
-        top_feature
+        "rainfall"
     )
 
-    # -------------------------------------------------
-    # FINAL RESPONSE PAYLOAD
-    # This will be returned to the client
-    # -------------------------------------------------
-    response_payload = {
+    response = {
         "status": "success",
         "crop": crop,
+        "prediction": round(predicted_yield, 2),
+        "advisory": advisory_data["advice"],
         "inputs": {
-            "lat": lat,
-            "lon": lon,
             "temp": avg_temp,
             "rain": total_rain,
             "soil_ph": soil_ph
-        },
-        "prediction": round(predicted_yield, 2),
-        "advisory": advisory_data["advice"]
+        }
     }
 
-    # -------------------------------------------------
-    # SAVE PREDICTION RESULT
-    # Logs the prediction into data/results.json
-    # Useful for evaluation and reporting
-    # -------------------------------------------------
-    save_prediction_result(response_payload)
+    # Save result for future analysis
+    save_prediction_result(response)
 
-    return jsonify(response_payload)
+    return jsonify(response)
+
+
+# -------------------------------------------------
+# SMART CROP RECOMMENDATION API
+# Compares multiple crops and selects the best one
+# -------------------------------------------------
+@app.route("/recommend", methods=["POST"])
+def recommend_crop():
+
+    user_data = request.get_json(silent=True) or {}
+
+    # Validate coordinates
+    if "lat" not in user_data or "lon" not in user_data:
+        return jsonify({
+            "status": "error",
+            "message": "Missing coordinates."
+        }), 400
+
+    lat = user_data.get("lat")
+    lon = user_data.get("lon")
+
+    # Validate soil pH (added for safety)
+    try:
+        soil_ph = float(user_data.get("soil_ph", 6.5))
+
+        if not (0 <= soil_ph <= 14):
+            raise ValueError
+
+    except:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid soil_ph."
+        }), 422
+
+    # Fetch weather
+    weather = get_weather_data(lat=lat, lon=lon)
+
+    if weather.get("status") == "error":
+        return jsonify({
+            "status": "error",
+            "message": "Weather failed"
+        }), 502
+
+    avg_temp = weather["avg_temp"]
+    total_rain = weather["total_rain"]
+
+    # Crop options supported by system
+    possible_crops = [
+        "Rice",
+        "Wheat",
+        "Maize",
+        "Sugarcane",
+        "Millets"
+    ]
+
+    predictions = {}
+
+    # Multi-crop analysis
+    for crop in possible_crops:
+
+        features = [[avg_temp, total_rain, soil_ph]]
+
+        if model and hasattr(model, "predict"):
+
+            yield_val = float(model.predict(features)[0])
+
+        else:
+            # Dummy logic for demo purposes
+            if crop == "Rice":
+                yield_val = (avg_temp * 12) + (total_rain * 5)
+
+            elif crop == "Sugarcane":
+                yield_val = (avg_temp * 14) + (total_rain * 4)
+
+            else:
+                yield_val = (avg_temp * 10) + (total_rain * 4)
+
+        predictions[crop] = round(yield_val, 2)
+
+    # Select crop with highest predicted yield
+    best_crop = max(predictions, key=predictions.get)
+
+    # Advisory explanation
+    advice_map = {
+        "Rice": "High rainfall detected; perfect for Rice.",
+        "Wheat": "Cooler temperature detected; Wheat is ideal.",
+        "Sugarcane": "Stable heat and moisture detected; Sugarcane recommended.",
+        "Millets": "Dry conditions detected; Millets are most resilient."
+    }
+
+    advisory_message = advice_map.get(
+        best_crop,
+        "Optimal crop for current scenario."
+    )
+    response = {
+    "status": "success",
+    "recommended_crop": best_crop,
+    "expected_yield": predictions[best_crop],
+    "advisory": advisory_message,
+    "all_predictions": predictions,
+    "environment": {
+        "temp": avg_temp,
+        "rain": total_rain
+    }
+}
+
+    # Save result to results.json
+    save_prediction_result(response)
+
+    # Return response to client
+    return jsonify(response)
 
 
 # -------------------------------------------------
 # METRICS API
+# Returns model evaluation metrics
 # -------------------------------------------------
 @app.route("/metrics", methods=["GET"])
 def metrics_api():
 
-    # Updated path to data/metrics.json
-    metrics_path = os.path.join(os.path.dirname(__file__), "data", "metrics.json")
+    path = os.path.join(os.path.dirname(__file__), "data", "metrics.json")
 
-    if os.path.exists(metrics_path):
-        try:
-            with open(metrics_path, "r") as f:
-                metrics_data = json.load(f)
+    if os.path.exists(path):
+
+        with open(path, "r") as f:
 
             return jsonify({
                 "status": "success",
-                "data": metrics_data
-            }), 200
+                "data": json.load(f)
+            })
 
-        except Exception as e:
-            return jsonify({
-                "status": "error",
-                "message": f"Failed to read metrics: {e}"
-            }), 500
-
-    else:
-        return jsonify({
-            "status": "error",
-            "message": "Metrics file not found. Please run evaluation first."
-        }), 404
+    return jsonify({
+        "status": "error",
+        "message": "No metrics found"
+    }), 404
 
 
 # -------------------------------------------------
 # ADVISORY FUNCTION
+# Generates simple farming advice
 # -------------------------------------------------
 def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_feature):
 
-    advice = ""
-
     if total_rain < 100:
-        advice = "Low rainfall detected. Increase irrigation to maintain yield."
+
+        advice = "Low rainfall. Increase irrigation."
 
     elif avg_temp > 30:
-        advice = "High temperature warning. Consider using mulch to keep soil cool."
 
-    elif soil_ph < 6.0:
-        advice = "Soil is acidic. Consider adding lime to balance pH levels."
+        advice = "High heat. Use mulch."
 
     else:
-        advice = "Conditions are optimal for current crop growth."
+
+        advice = "Conditions optimal."
 
     return {
         "advice": advice,
@@ -272,68 +323,28 @@ def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_featur
 
 
 # -------------------------------------------------
-# ADVISORY API
-# -------------------------------------------------
-@app.route("/advisory", methods=["POST"])
-def advisory_api():
-
-    try:
-        user_data = request.get_json(silent=True) or {}
-
-        temp = user_data.get("temp", 25.0)
-        rain = user_data.get("rain", 150.0)
-        ph = user_data.get("soil_ph", 6.5)
-        predicted_yield = user_data.get("predicted_yield", 3000.0)
-
-        important_feature = "rainfall" if rain < 100 else "temperature"
-
-        if rain < 100:
-            advice = "Low rainfall detected. Increase irrigation."
-        elif temp > 32:
-            advice = "Heat stress likely. Ensure adequate soil moisture."
-        else:
-            advice = "Conditions are stable. Follow standard crop cycle."
-
-        return jsonify({
-            "status": "success",
-            "advice": advice,
-            "important_feature": important_feature,
-            "impact_level": "High"
-        }), 200
-
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
-
-
-# -------------------------------------------------
-# WEATHER API (New Endpoint)
+# WEATHER API
+# Allows frontend to fetch weather directly
 # -------------------------------------------------
 @app.route("/weather", methods=["GET"])
 def weather_api():
 
-    # Extract latitude and longitude from URL parameters
     lat = request.args.get("lat", default=28.6, type=float)
     lon = request.args.get("lon", default=77.2, type=float)
 
-    # Call weather helper function
     weather = get_weather_data(lat=lat, lon=lon)
 
     if weather["status"] == "success":
+
         return jsonify({
             "status": "success",
-            "location": {"lat": lat, "lon": lon},
-            "data": {
-                "avg_temp": weather["avg_temp"],
-                "total_rain": weather["total_rain"]
-            }
-        }), 200
+            "data": weather
+        })
+
     else:
+
         return jsonify({
-            "status": "error",
-            "message": "Weather data could not be retrieved"
+            "status": "error"
         }), 500
 
 
