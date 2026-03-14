@@ -177,5 +177,10 @@ python test_api.py
 - **Advisory API**: Launched the `/advisory` endpoint to provide data-driven recommendations to farmers.
 - **Logic Validation**: Verified the advisory engine using POST requests/test_api.py, confirming accurate feature-to-advice mapping.
 
+### Progress Update: 21/02/26
+- **Project Restructuring**: Refactored the backend directory into a modular hierarchy for improved maintainability.
+- **Code Decoupling**: Migrated weather-fetching utilities and model loading logic into separate modules.
+- **Organization Milestone**: Established a professional folder structure including dedicated directories for data and utility functions.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)

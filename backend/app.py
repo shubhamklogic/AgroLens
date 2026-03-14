@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from utils import get_weather_data
+from utils.fetch_weather import get_weather_data
 from datetime import datetime
 import pickle
 import os
@@ -8,26 +8,33 @@ import json
 app = Flask(__name__)
 
 # -------------------------------------------------
-# MODEL LOADING SECTION
+# MODEL INITIALIZATION
 # Loads the trained ML model from model.pkl
 # -------------------------------------------------
-def load_model():
-    model_path = "model.pkl"
+def load_trained_model():
+
+    # Path to model.pkl in project root
+    model_path = os.path.join(os.path.dirname(__file__), "model.pkl")
+
     if os.path.exists(model_path):
         try:
             with open(model_path, "rb") as f:
+                print("✅ Model loaded successfully.")
                 return pickle.load(f)
         except Exception as e:
-            print(f"Error loading model: {e}")
+            print(f"⚠️ Error loading model file: {e}")
+    else:
+        print("⚠️ model.pkl not found. Using internal fallback logic.")
+
     return None
 
-model = load_model()
+
+# Load model once when server starts
+model = load_trained_model()
 
 
 # -------------------------------------------------
 # PREDICTION API
-# This endpoint receives user input and returns
-# yield prediction + advisory reasoning
 # -------------------------------------------------
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -35,39 +42,36 @@ def predict():
     # Get JSON data from request body
     user_data = request.get_json(silent=True) or {}
 
-    # Extract input parameters (with defaults)
+    # Extract input parameters
     crop = user_data.get("crop", "wheat").capitalize()
     lat = user_data.get("lat", 28.6)
     lon = user_data.get("lon", 77.2)
     soil_ph = user_data.get("soil_ph", 6.5)
 
-    # Fetch weather data using helper utility
+    # Fetch weather data
     weather = get_weather_data(lat=lat, lon=lon)
 
-    # Handle weather service failure
     if weather["status"] == "error":
         return jsonify({
             "status": "error",
             "message": "Weather service unavailable"
         }), 500
 
-    # Extract weather parameters
     avg_temp = weather["avg_temp"]
     total_rain = weather["total_rain"]
 
-    # Prepare model features
+    # Prepare features for model
     features = [[avg_temp, total_rain, soil_ph]]
 
     # -------------------------------------------------
     # MODEL PREDICTION SECTION
-    # Uses ML model if available, otherwise fallback logic
     # -------------------------------------------------
     try:
         if model and hasattr(model, "predict"):
             prediction = model.predict(features)
             predicted_yield = float(prediction[0])
         else:
-            # Dummy fallback prediction
+            # fallback prediction
             predicted_yield = (avg_temp * 10) + (total_rain * 5) - (soil_ph * 2)
             print("DEBUG: Using Dummy/Mock prediction logic")
 
@@ -78,14 +82,11 @@ def predict():
         }), 500
 
     # -------------------------------------------------
-    # ADVISORY LOGIC SECTION
-    # Converts model output into human readable advice
+    # ADVISORY LOGIC
     # -------------------------------------------------
 
-    # For now assume rainfall is the most important feature
     top_feature = "rainfall"
 
-    # Call advisory function
     advisory_data = generate_advisory(
         predicted_yield,
         avg_temp,
@@ -94,10 +95,6 @@ def predict():
         top_feature
     )
 
-    # -------------------------------------------------
-    # FINAL API RESPONSE
-    # Returns prediction + advisory reasoning
-    # -------------------------------------------------
     return jsonify({
         "status": "success",
         "prediction": round(predicted_yield, 2),
@@ -107,17 +104,16 @@ def predict():
 
 
 # -------------------------------------------------
-# EVALUATION API SECTION
-# Returns saved model performance metrics
+# METRICS API
 # -------------------------------------------------
 @app.route("/metrics", methods=["GET"])
 def metrics_api():
 
-    metrics_path = "metrics.json"
+    # Updated path to data/metrics.json
+    metrics_path = os.path.join(os.path.dirname(__file__), "data", "metrics.json")
 
     if os.path.exists(metrics_path):
         try:
-            # Load metrics from file
             with open(metrics_path, "r") as f:
                 metrics_data = json.load(f)
 
@@ -140,8 +136,7 @@ def metrics_api():
 
 
 # -------------------------------------------------
-# ADVISORY GENERATION FUNCTION
-# Converts ML numbers into farming advice
+# ADVISORY FUNCTION
 # -------------------------------------------------
 def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_feature):
 
@@ -166,29 +161,21 @@ def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_featur
 
 
 # -------------------------------------------------
-# ADVISORY API SECTION (19/02 Task)
-# Returns specific agricultural advice and
-# identifies the most important influencing feature
+# ADVISORY API
 # -------------------------------------------------
 @app.route("/advisory", methods=["POST"])
 def advisory_api():
-    """
-    API endpoint that returns specific agricultural advice 
-    and the most important feature driving the prediction.
-    """
+
     try:
         user_data = request.get_json(silent=True) or {}
 
-        # Extract values (using defaults if missing)
         temp = user_data.get("temp", 25.0)
         rain = user_data.get("rain", 150.0)
         ph = user_data.get("soil_ph", 6.5)
         predicted_yield = user_data.get("predicted_yield", 3000.0)
 
-        # Identify the most impactful factor (simulated logic)
         important_feature = "rainfall" if rain < 100 else "temperature"
 
-        # Advisory logic based on conditions
         if rain < 100:
             advice = "Low rainfall detected. Increase irrigation."
         elif temp > 32:
