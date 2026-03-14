@@ -18,10 +18,11 @@ CORS(app)  # Allows frontend applications (different ports/domains) to access th
 # This improves readability and performance.
 # -------------------------------------------------
 
-# Crop-specific yield adjustment factors used
-# in the crop recommendation system
+# Crop-specific yield adjustment factors
+# These values slightly bias the prediction so that
+# crops with naturally higher productivity still compete fairly
 crop_factor = {
-    "Rice": 120,
+    "Rice": 150,      # Increased to match Sugarcane advantage in rainfall conditions
     "Wheat": 80,
     "Maize": 60,
     "Sugarcane": 150,
@@ -39,11 +40,6 @@ advice_map = {
 
 # -------------------------------------------------
 # MODEL INITIALIZATION
-# -------------------------------------------------
-# This function loads the trained ML model (model.pkl)
-# when the server starts. Loading the model once
-# improves performance because we avoid loading
-# it for every incoming request.
 # -------------------------------------------------
 def load_trained_model():
 
@@ -65,15 +61,11 @@ def load_trained_model():
 
 
 # Global model instance
-# Loaded once when the server starts
 model = load_trained_model()
 
 
 # -------------------------------------------------
 # DATA STORAGE FUNCTION
-# -------------------------------------------------
-# Saves prediction results into data/results.json
-# This helps track experiments and system usage.
 # -------------------------------------------------
 def save_prediction_result(data):
 
@@ -106,11 +98,6 @@ def save_prediction_result(data):
 
 # -------------------------------------------------
 # PREDICTION API
-# -------------------------------------------------
-# Endpoint: POST /predict
-#
-# Purpose:
-# Predict crop yield using weather + soil data
 # -------------------------------------------------
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -160,7 +147,6 @@ def predict():
             }), 422
 
 
-        # Fetch weather data
         weather = get_weather_data(lat=lat, lon=lon)
 
         if weather.get("status") == "error":
@@ -175,19 +161,14 @@ def predict():
         total_rain = weather["total_rain"]
         humidity = weather.get("humidity", 60.0)
 
-
-        # Feature vector for ML model
         features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
 
-
-        # Prediction logic
         if model and hasattr(model, "predict"):
 
             predicted_yield = float(model.predict(features)[0])
 
         else:
 
-            # Fallback logic if model not available
             base = (avg_temp * 10) + (total_rain * 5)
             humidity_impact = (humidity * 1.5)
             soil_impact = 500 if soil_type == 2 else 200
@@ -208,15 +189,11 @@ def predict():
         response = {
 
             "status": "success",
-
             "crop": crop,
-
             "prediction": round(predicted_yield, 2),
-
             "advisory": advisory_data["advice"],
 
             "inputs": {
-
                 "temp": avg_temp,
                 "rain": total_rain,
                 "humidity": humidity,
@@ -314,9 +291,16 @@ def recommend_crop():
 
         predictions = {}
 
+        # -------------------------------------------------
+        # CROP RECOMMENDATION PREDICTION LOOP
+        # -------------------------------------------------
+        # Each crop is evaluated separately.
+        # ML model -> used if available
+        # Fallback logic -> used if model missing
+        # -------------------------------------------------
         for crop in possible_crops:
 
-            features = [[avg_temp,total_rain,humidity,soil_ph,soil_type]]
+            features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
 
             if model and hasattr(model,"predict"):
 
@@ -324,14 +308,37 @@ def recommend_crop():
 
             else:
 
-                base = (avg_temp * 10) + (total_rain * 5)
-                humidity_impact = (humidity * 1.5)
-                soil_impact = 500 if soil_type == 2 else 200
-                ph_penalty = abs(7.0 - soil_ph) * 50
+                # Base environmental score used for all crops
+                base = (avg_temp * 5) + (humidity * 2)
 
-                yield_val = base + humidity_impact + soil_impact - ph_penalty
+                # -------------------------------------------------
+                # Updated Rice Logic
+                # -------------------------------------------------
+                # Rice heavily depends on rainfall.
+                # Increasing rainfall multiplier ensures
+                # Rice wins in tropical/high rainfall climates.
+                if crop == "Rice":
+                    yield_val = base + (total_rain * 20) + (600 if soil_type == 3 else 0)
+
+                # -------------------------------------------------
+                # Updated Sugarcane Logic
+                # -------------------------------------------------
+                # Sugarcane prefers heat + humidity but we reduced
+                # the multiplier so it doesn't dominate every case.
+                elif crop == "Sugarcane":
+                    yield_val = base + (avg_temp * 10) + (humidity * 2)
+
+                elif crop == "Wheat":
+                    yield_val = base + (200 if avg_temp < 25 else 50) + (500 if soil_type == 2 else 0)
+
+                elif crop == "Millets":
+                    yield_val = base + (500 if total_rain < 50 else 0) + (400 if soil_type == 1 else 0)
+
+                else:
+                    yield_val = base + (total_rain * 2)
 
 
+            # Final adjustment factor
             adjusted_yield = yield_val + crop_factor.get(crop,0)
 
             predictions[crop] = round(adjusted_yield,2)
@@ -353,7 +360,6 @@ def recommend_crop():
             "all_predictions":predictions,
 
             "environment":{
-
                 "temp":avg_temp,
                 "rain":total_rain,
                 "humidity":humidity
@@ -402,19 +408,15 @@ def metrics_api():
 def generate_advisory(predicted_yield,avg_temp,total_rain,soil_ph,top_feature):
 
     if total_rain < 100:
-
         advice = "Low rainfall. Increase irrigation."
 
     elif avg_temp > 30:
-
         advice = "High heat. Use mulch."
 
     else:
-
         advice = "Conditions optimal."
 
     return {
-
         "advice":advice,
         "primary_factor":top_feature
     }
@@ -434,7 +436,6 @@ def weather_api():
     if weather["status"] == "success":
 
         return jsonify({
-
             "status":"success",
             "data":weather
         })

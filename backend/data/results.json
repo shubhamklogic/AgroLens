@@ -170,5 +170,252 @@
             "humidity": 43.004
         },
         "timestamp": "2026-03-14 18:30:47"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 695.99,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 665.99,
+            "Wheat": 625.99,
+            "Maize": 605.99,
+            "Sugarcane": 695.99,
+            "Millets": 585.99
+        },
+        "environment": {
+            "temp": 27.742,
+            "rain": 3.05,
+            "humidity": 68.882
+        },
+        "timestamp": "2026-03-14 23:04:35"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 962.76,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 932.76,
+            "Wheat": 892.76,
+            "Maize": 872.76,
+            "Sugarcane": 962.76,
+            "Millets": 852.76
+        },
+        "environment": {
+            "temp": 27.576,
+            "rain": 0.0,
+            "humidity": 24.668
+        },
+        "timestamp": "2026-03-14 23:06:43"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 621.47,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 591.47,
+            "Wheat": 551.47,
+            "Maize": 531.47,
+            "Sugarcane": 621.47,
+            "Millets": 511.47
+        },
+        "environment": {
+            "temp": 29.73,
+            "rain": 0.0,
+            "humidity": 16.11
+        },
+        "timestamp": "2026-03-14 23:07:11"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 695.99,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 665.99,
+            "Wheat": 625.99,
+            "Maize": 605.99,
+            "Sugarcane": 695.99,
+            "Millets": 585.99
+        },
+        "environment": {
+            "temp": 27.742,
+            "rain": 3.05,
+            "humidity": 68.882
+        },
+        "timestamp": "2026-03-14 23:09:20"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 962.76,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 932.76,
+            "Wheat": 892.76,
+            "Maize": 872.76,
+            "Sugarcane": 962.76,
+            "Millets": 852.76
+        },
+        "environment": {
+            "temp": 27.576,
+            "rain": 0.0,
+            "humidity": 24.668
+        },
+        "timestamp": "2026-03-14 23:09:55"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 962.76,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 932.76,
+            "Wheat": 892.76,
+            "Maize": 872.76,
+            "Sugarcane": 962.76,
+            "Millets": 852.76
+        },
+        "environment": {
+            "temp": 27.576,
+            "rain": 0.0,
+            "humidity": 24.668
+        },
+        "timestamp": "2026-03-14 23:10:18"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 695.99,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 665.99,
+            "Wheat": 625.99,
+            "Maize": 605.99,
+            "Sugarcane": 695.99,
+            "Millets": 585.99
+        },
+        "environment": {
+            "temp": 27.742,
+            "rain": 3.05,
+            "humidity": 68.882
+        },
+        "timestamp": "2026-03-14 23:11:18"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 962.76,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 932.76,
+            "Wheat": 892.76,
+            "Maize": 872.76,
+            "Sugarcane": 962.76,
+            "Millets": 852.76
+        },
+        "environment": {
+            "temp": 27.576,
+            "rain": 0.0,
+            "humidity": 24.668
+        },
+        "timestamp": "2026-03-14 23:12:14"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 621.47,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 591.47,
+            "Wheat": 551.47,
+            "Maize": 531.47,
+            "Sugarcane": 621.47,
+            "Millets": 511.47
+        },
+        "environment": {
+            "temp": 29.73,
+            "rain": 0.0,
+            "humidity": 16.11
+        },
+        "timestamp": "2026-03-14 23:13:14"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1180.87,
+        "advisory": "Dry conditions detected; Millets are most resilient.",
+        "all_predictions": {
+            "Rice": 280.87,
+            "Wheat": 330.87,
+            "Maize": 280.87,
+            "Sugarcane": 807.37,
+            "Millets": 1180.87
+        },
+        "environment": {
+            "temp": 29.73,
+            "rain": 0.0,
+            "humidity": 16.11
+        },
+        "timestamp": "2026-03-14 23:21:50"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Wheat",
+        "expected_yield": 837.22,
+        "advisory": "Cooler temperature detected; Wheat is ideal.",
+        "all_predictions": {
+            "Rice": 287.22,
+            "Wheat": 837.22,
+            "Maize": 287.22,
+            "Sugarcane": 824.2,
+            "Millets": 787.22
+        },
+        "environment": {
+            "temp": 27.576,
+            "rain": 0.0,
+            "humidity": 24.668
+        },
+        "timestamp": "2026-03-14 23:22:12"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 1137.01,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 906.97,
+            "Wheat": 426.47,
+            "Maize": 382.57,
+            "Sugarcane": 1137.01,
+            "Millets": 876.47
+        },
+        "environment": {
+            "temp": 27.742,
+            "rain": 3.05,
+            "humidity": 68.882
+        },
+        "timestamp": "2026-03-14 23:22:26"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Sugarcane",
+        "expected_yield": 1137.01,
+        "advisory": "Stable heat and moisture detected; Sugarcane recommended.",
+        "all_predictions": {
+            "Rice": 906.97,
+            "Wheat": 426.47,
+            "Maize": 382.57,
+            "Sugarcane": 1137.01,
+            "Millets": 876.47
+        },
+        "environment": {
+            "temp": 27.742,
+            "rain": 3.05,
+            "humidity": 68.882
+        },
+        "timestamp": "2026-03-14 23:23:26"
     }
 ]

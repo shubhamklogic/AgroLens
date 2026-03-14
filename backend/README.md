@@ -242,5 +242,9 @@ python test_api.py
 - **Stability Enhancement**: Added global try-except blocks to API routes for standardized error reporting.
 - **Readability**: Refactored dictionaries and logic blocks for cleaner maintenance.
 
+### Progress Update: 11/03/26
+- **Demo Scenario Preparation**: Created 3 distinct test cases (Rice, Wheat, Maize) representing different climatic zones.
+- **Logic Verification**: Confirmed that the advisory system correctly responds to low-rainfall and high-heat scenarios.
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)
