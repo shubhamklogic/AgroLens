@@ -3,3 +3,4 @@ GET,/weather,"Directly fetches raw meteorological data from the NASA POWER API b
 POST,/predict,"Takes 5 input features (Temp, Rain, Humidity, pH, Soil Type) and returns a specific yield prediction for a single crop."
 POST,/recommend,"The Smart endpoint that compares multiple crops and suggests the one with the highest expected yield."
 GET,/metrics,"Retrieves historical model evaluation results and experiment logs."
+GET,/health,"Health check endpoint that verifies the backend server and model are running correctly."
