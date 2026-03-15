@@ -474,5 +474,62 @@
             "humidity": 16.11
         },
         "timestamp": "2026-03-14 23:31:16"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Wheat",
+        "expected_yield": 809.43,
+        "advisory": "Cooler temperature detected; Wheat is ideal.",
+        "all_predictions": {
+            "Rice": 329.43,
+            "Wheat": 809.43,
+            "Maize": 239.43,
+            "Sugarcane": 649.68,
+            "Millets": 719.43
+        },
+        "environment": {
+            "temp": 28.166000000000004,
+            "rain": 0.0,
+            "humidity": 19.298
+        },
+        "timestamp": "2026-03-15 11:38:00"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1119.55,
+        "advisory": "Dry conditions detected; Millets are most resilient.",
+        "all_predictions": {
+            "Rice": 329.55,
+            "Wheat": 309.55,
+            "Maize": 239.55,
+            "Sugarcane": 656.78,
+            "Millets": 1119.55
+        },
+        "environment": {
+            "temp": 29.536,
+            "rain": 0.0,
+            "humidity": 15.934000000000001
+        },
+        "timestamp": "2026-03-15 11:38:29"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Rice",
+        "expected_yield": 1080.54,
+        "advisory": "High rainfall detected; perfect for Rice.",
+        "all_predictions": {
+            "Rice": 1080.54,
+            "Wheat": 405.14,
+            "Maize": 340.68,
+            "Sugarcane": 839.87,
+            "Millets": 815.14
+        },
+        "environment": {
+            "temp": 27.919999999999998,
+            "rain": 2.77,
+            "humidity": 67.768
+        },
+        "timestamp": "2026-03-15 11:38:50"
     }
 ]

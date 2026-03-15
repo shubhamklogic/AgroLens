@@ -246,5 +246,12 @@ python test_api.py
 - **Demo Scenario Preparation**: Created 3 distinct test cases (Rice, Wheat, Maize) representing different climatic zones.
 - **Logic Verification**: Confirmed that the advisory system correctly responds to low-rainfall and high-heat scenarios.
 
+### Progress Update: 18/03/26
+- **Backend Stability**: Added validation logic to prevent negative rainfall and unrealistic temperature inputs.
+- **Error Handling**: Standardized JSON error responses for invalid payloads
+- **Integrity**: Ensured the system handles missing weather data with logical fallbacks.
+
+
+
 ## 👤 Maintained By
 Shubham Kumar (Backend & API Engineer)

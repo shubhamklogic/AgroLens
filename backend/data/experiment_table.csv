@@ -1,0 +1,4 @@
+Trial_ID,Location_Type,Rainfall_mm,Temp_C,Soil_pH,Recommended_Crop,Predicted_Yield
+1,Tropical,305.00,27.74,6.0,Rice,695.99
+2,Temperate,0.00,27.57,7.0,Wheat,962.76
+3,Arid,0.00,29.73,8.0,Millets,621.47

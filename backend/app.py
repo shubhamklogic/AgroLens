@@ -6,8 +6,15 @@ import pickle
 import os
 import json
 
+# -------------------------------------------------
+# FLASK APPLICATION INITIALIZATION
+# -------------------------------------------------
+# Flask app object created
 app = Flask(__name__)
-CORS(app)  # Allows frontend applications (different ports/domains) to access this backend API
+
+# Enable CORS so frontend apps (React, Vue, etc.)
+# running on different ports can access this API
+CORS(app)
 
 
 # -------------------------------------------------
@@ -22,7 +29,7 @@ CORS(app)  # Allows frontend applications (different ports/domains) to access th
 # These values slightly bias the prediction so that
 # crops with naturally higher productivity still compete fairly
 crop_factor = {
-    "Rice": 150,      # Increased to match Sugarcane advantage in rainfall conditions
+    "Rice": 150,
     "Wheat": 80,
     "Maize": 60,
     "Sugarcane": 150,
@@ -40,6 +47,9 @@ advice_map = {
 
 # -------------------------------------------------
 # MODEL INITIALIZATION
+# -------------------------------------------------
+# Loads the trained ML model from model.pkl
+# If the file is missing or corrupted, fallback logic is used
 # -------------------------------------------------
 def load_trained_model():
 
@@ -60,17 +70,21 @@ def load_trained_model():
     return None
 
 
-# Global model instance
+# Global model instance (loaded once at server start)
 model = load_trained_model()
 
 
 # -------------------------------------------------
 # DATA STORAGE FUNCTION
 # -------------------------------------------------
+# Saves prediction responses to data/results.json
+# This allows later analysis or visualization
+# -------------------------------------------------
 def save_prediction_result(data):
 
     file_path = os.path.join(os.path.dirname(__file__), "data", "results.json")
 
+    # Ensure the data folder exists
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     results = []
@@ -82,6 +96,7 @@ def save_prediction_result(data):
         except Exception:
             results = []
 
+    # Add timestamp to each saved prediction
     data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     results.append(data)
@@ -99,6 +114,8 @@ def save_prediction_result(data):
 # -------------------------------------------------
 # PREDICTION API
 # -------------------------------------------------
+# Predicts crop yield based on environmental data
+# -------------------------------------------------
 @app.route("/predict", methods=["POST"])
 def predict():
 
@@ -106,6 +123,7 @@ def predict():
 
         user_data = request.get_json(silent=True) or {}
 
+        # Check if coordinates exist
         if "lat" not in user_data or "lon" not in user_data:
             return jsonify({
                 "status": "error",
@@ -117,7 +135,9 @@ def predict():
         lat = user_data.get("lat")
         lon = user_data.get("lon")
 
-        # Soil Type Validation
+        # -------------------------------------------------
+        # SOIL TYPE VALIDATION
+        # -------------------------------------------------
         try:
             soil_type = int(user_data.get("soil_type", 2))
 
@@ -132,7 +152,9 @@ def predict():
             }), 422
 
 
-        # Soil pH Validation
+        # -------------------------------------------------
+        # SOIL PH VALIDATION
+        # -------------------------------------------------
         try:
             soil_ph = float(user_data.get("soil_ph", 6.5))
 
@@ -147,6 +169,9 @@ def predict():
             }), 422
 
 
+        # -------------------------------------------------
+        # WEATHER DATA FETCH
+        # -------------------------------------------------
         weather = get_weather_data(lat=lat, lon=lon)
 
         if weather.get("status") == "error":
@@ -161,14 +186,56 @@ def predict():
         total_rain = weather["total_rain"]
         humidity = weather.get("humidity", 60.0)
 
+
+        # -------------------------------------------------
+        # ENVIRONMENTAL INPUT VALIDATION
+        # -------------------------------------------------
+        # Ensures realistic agricultural values
+        # Prevents impossible predictions
+        # -------------------------------------------------
+        try:
+
+            # Rainfall cannot be negative
+            if total_rain < 0:
+                return jsonify({
+                    "status": "error",
+                    "message": "Invalid rainfall: cannot be negative"
+                }), 422
+
+            # Temperature must stay within realistic agricultural bounds
+            if not (-10 <= avg_temp <= 60):
+                return jsonify({
+                    "status": "error",
+                    "message": "Temperature out of realistic agricultural bounds"
+                }), 422
+
+            # Humidity must be between 0 and 100%
+            if not (0 <= humidity <= 100):
+                return jsonify({
+                    "status": "error",
+                    "message": "Humidity must be between 0 and 100%"
+                }), 422
+
+        except Exception as e:
+
+            return jsonify({
+                "status": "error",
+                "message": f"Validation failed: {str(e)}"
+            }), 400
+
+
         features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
 
+        # -------------------------------------------------
+        # ML MODEL PREDICTION
+        # -------------------------------------------------
         if model and hasattr(model, "predict"):
 
             predicted_yield = float(model.predict(features)[0])
 
         else:
 
+            # Fallback mathematical estimation logic
             base = (avg_temp * 10) + (total_rain * 5)
             humidity_impact = (humidity * 1.5)
             soil_impact = 500 if soil_type == 2 else 200
@@ -280,6 +347,37 @@ def recommend_crop():
         humidity = weather.get("humidity",60.0)
 
 
+        # -------------------------------------------------
+        # ENVIRONMENTAL INPUT VALIDATION
+        # -------------------------------------------------
+        try:
+
+            if total_rain < 0:
+                return jsonify({
+                    "status":"error",
+                    "message":"Invalid rainfall: cannot be negative"
+                }),422
+
+            if not (-10 <= avg_temp <= 60):
+                return jsonify({
+                    "status":"error",
+                    "message":"Temperature out of realistic agricultural bounds"
+                }),422
+
+            if not (0 <= humidity <= 100):
+                return jsonify({
+                    "status":"error",
+                    "message":"Humidity must be between 0 and 100%"
+                }),422
+
+        except Exception as e:
+
+            return jsonify({
+                "status":"error",
+                "message":f"Validation failed: {str(e)}"
+            }),400
+
+
         possible_crops = [
             "Rice",
             "Wheat",
@@ -291,12 +389,9 @@ def recommend_crop():
 
         predictions = {}
 
+
         # -------------------------------------------------
         # CROP RECOMMENDATION PREDICTION LOOP
-        # -------------------------------------------------
-        # Each crop is evaluated separately.
-        # ML model -> used if available
-        # Fallback logic -> used if model missing
         # -------------------------------------------------
         for crop in possible_crops:
 
@@ -308,23 +403,11 @@ def recommend_crop():
 
             else:
 
-                # Base environmental score used for all crops
                 base = (avg_temp * 5) + (humidity * 2)
 
-                # -------------------------------------------------
-                # Updated Rice Logic
-                # -------------------------------------------------
-                # Rice heavily depends on rainfall.
-                # Increasing rainfall multiplier ensures
-                # Rice wins in tropical/high rainfall climates.
                 if crop == "Rice":
                     yield_val = base + (total_rain * 20) + (600 if soil_type == 3 else 0)
 
-                # -------------------------------------------------
-                # Updated Sugarcane Logic
-                # -------------------------------------------------
-                # Sugarcane prefers heat + humidity but we reduced
-                # the multiplier so it doesn't dominate every case.
                 elif crop == "Sugarcane":
                     yield_val = base + (avg_temp * 10) + (humidity * 2)
 
@@ -338,7 +421,6 @@ def recommend_crop():
                     yield_val = base + (total_rain * 2)
 
 
-            # Final adjustment factor
             adjusted_yield = yield_val + crop_factor.get(crop,0)
 
             predictions[crop] = round(adjusted_yield,2)
@@ -446,10 +528,27 @@ def weather_api():
             "status":"error"
         }),500
 
+# -------------------------------------------------
+# HEALTH CHECK API
+# -------------------------------------------------
+# This endpoint helps verify that the backend
+# server is running properly.
+# It is commonly used in production deployments,
+# monitoring tools, and load balancers.
+# -------------------------------------------------
+@app.route("/health", methods=["GET"])
+def health_check():
+
+    return jsonify({
+        "status": "success",
+        "message": "AgroLens backend is running",
+        "model_loaded": True if model else False
+    })
 
 # -------------------------------------------------
 # RUN SERVER
 # -------------------------------------------------
 if __name__ == "__main__":
 
+    # debug=True enables auto-reload and error logs
     app.run(debug=True)
