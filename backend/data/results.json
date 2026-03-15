@@ -564,5 +564,24 @@
             "humidity": 17.330000000000002
         },
         "timestamp": "2026-03-15 13:28:10"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Wheat",
+        "expected_yield": 805.57,
+        "advisory": "Cooler temperature detected; Wheat is ideal.",
+        "all_predictions": {
+            "Rice": 325.57,
+            "Wheat": 805.57,
+            "Maize": 235.57,
+            "Sugarcane": 642.05,
+            "Millets": 715.57
+        },
+        "environment": {
+            "temp": 28.182,
+            "rain": 0.0,
+            "humidity": 17.330000000000002
+        },
+        "timestamp": "2026-03-15 14:50:05"
     }
 ]
