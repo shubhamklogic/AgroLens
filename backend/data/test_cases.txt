@@ -1,0 +1,44 @@
+Case 1:
+Tropical Profile (High Precipitation)
+
+Inputs:
+lat: 12.91
+lon: 74.85
+soil_ph: 6.0
+soil_type: 3 (Clayey)
+
+Logic:
+Validates the system's ability to recommend water-intensive crops when high rainfall and humidity are detected. Tropical regions with clayey soil typically support crops that require large amounts of water.
+
+Expected Result:
+The system should recommend **Rice**, as it thrives in high rainfall environments and clayey soil conditions.
+
+Case 2:
+Temperate Profile (Optimal Growth)
+
+Inputs:
+lat: 30.90
+lon: 75.85
+soil_ph: 7.0
+soil_type: 2 (Loamy)
+
+Logic:
+Tests the baseline crop yield prediction under balanced agricultural conditions. Neutral pH soil and moderate temperatures represent ideal farming environments.
+
+Expected Result:
+The system should recommend **Wheat or Maize**, with stable yield predictions due to favorable soil and climate conditions.
+
+Case 3:
+Arid Profile (Environmental Stress)
+
+Inputs:
+lat: 26.23
+lon: 73.02
+soil_ph: 8.0
+soil_type: 1 (Sandy)
+
+Logic:
+Evaluates how the backend handles harsh agricultural environments with low rainfall, sandy soil, and alkaline pH levels. The system should penalize crops that require high water availability.
+
+Expected Result:
+The system should recommend **Millets or drought-resistant crops** and trigger advisory messages such as **"Low rainfall. Increase irrigation."**
