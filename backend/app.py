@@ -28,6 +28,10 @@ CORS(app)
 # Crop-specific yield adjustment factors
 # These values slightly bias the prediction so that
 # crops with naturally higher productivity still compete fairly
+# NOTE FOR TEAM:
+# These values are manually tuned balancing factors.
+# They help prevent one crop from dominating the recommendation
+# due to model bias or environmental advantages.
 crop_factor = {
     "Rice": 150,
     "Wheat": 80,
@@ -37,6 +41,18 @@ crop_factor = {
 }
 
 # Advisory messages for recommended crops
+# NOTE FOR TEAM:
+# These are STATIC advisory messages used by the /recommend API.
+# They do not dynamically evaluate the environment.
+# This means the advisory may not always perfectly match
+# the real weather conditions.
+#
+# Example:
+# If Wheat is recommended, the message always says
+# "Cooler temperature detected", even if temperature is high.
+#
+# This is a minor logic inconsistency because the /predict
+# endpoint uses a dynamic advisory generator instead.
 advice_map = {
     "Rice": "High rainfall detected; perfect for Rice.",
     "Wheat": "Cooler temperature detected; Wheat is ideal.",
@@ -195,21 +211,18 @@ def predict():
         # -------------------------------------------------
         try:
 
-            # Rainfall cannot be negative
             if total_rain < 0:
                 return jsonify({
                     "status": "error",
                     "message": "Invalid rainfall: cannot be negative"
                 }), 422
 
-            # Temperature must stay within realistic agricultural bounds
             if not (-10 <= avg_temp <= 60):
                 return jsonify({
                     "status": "error",
                     "message": "Temperature out of realistic agricultural bounds"
                 }), 422
 
-            # Humidity must be between 0 and 100%
             if not (0 <= humidity <= 100):
                 return jsonify({
                     "status": "error",
@@ -235,7 +248,12 @@ def predict():
 
         else:
 
-            # Fallback mathematical estimation logic
+            # -------------------------------------------------
+            # FALLBACK ESTIMATION MODEL
+            # -------------------------------------------------
+            # Used when model.pkl is missing or failed to load.
+            # This provides a mathematical approximation so
+            # the API still works without ML.
             base = (avg_temp * 10) + (total_rain * 5)
             humidity_impact = (humidity * 1.5)
             soil_impact = 500 if soil_type == 2 else 200
@@ -393,6 +411,15 @@ def recommend_crop():
         # -------------------------------------------------
         # CROP RECOMMENDATION PREDICTION LOOP
         # -------------------------------------------------
+        # NOTE FOR TEAM:
+        # Each crop is simulated using the same environmental
+        # inputs and then adjusted with crop-specific logic.
+        #
+        # Sugarcane has a strong temperature multiplier:
+        # avg_temp * 10
+        #
+        # This can sometimes dominate predictions in hot climates.
+        # However crop_factor helps balance this bias.
         for crop in possible_crops:
 
             features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
@@ -409,6 +436,17 @@ def recommend_crop():
                     yield_val = base + (total_rain * 20) + (600 if soil_type == 3 else 0)
 
                 elif crop == "Sugarcane":
+
+                    # -------------------------------------------------
+                    # SUGARCANE LOGIC
+                    # -------------------------------------------------
+                    # Sugarcane benefits heavily from warm climates.
+                    # Temperature is given stronger influence here.
+                    #
+                    # NOTE:
+                    # avg_temp * 10 may sometimes dominate predictions.
+                    # This is intentional to reflect sugarcane's
+                    # heat-driven productivity.
                     yield_val = base + (avg_temp * 10) + (humidity * 2)
 
                 elif crop == "Wheat":
@@ -487,6 +525,9 @@ def metrics_api():
 # -------------------------------------------------
 # ADVISORY FUNCTION
 # -------------------------------------------------
+# This is a dynamic advisory system used by /predict
+# Unlike advice_map, it evaluates weather conditions
+# before generating advice.
 def generate_advisory(predicted_yield,avg_temp,total_rain,soil_ph,top_feature):
 
     if total_rain < 100:
@@ -515,7 +556,10 @@ def weather_api():
 
     weather = get_weather_data(lat=lat,lon=lon)
 
-    if weather["status"] == "success":
+    # NOTE FOR TEAM:
+    # Using .get() prevents KeyError if "status"
+    # is missing due to unexpected API failure.
+    if weather.get("status") == "success":
 
         return jsonify({
             "status":"success",
@@ -527,6 +571,7 @@ def weather_api():
         return jsonify({
             "status":"error"
         }),500
+
 
 # -------------------------------------------------
 # HEALTH CHECK API
@@ -545,10 +590,13 @@ def health_check():
         "model_loaded": True if model else False
     })
 
+
 # -------------------------------------------------
 # RUN SERVER
 # -------------------------------------------------
 if __name__ == "__main__":
 
     # debug=True enables auto-reload and error logs
+    # Useful during development but should be disabled
+    # in production deployments.
     app.run(debug=True)
