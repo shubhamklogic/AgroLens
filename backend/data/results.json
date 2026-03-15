@@ -531,5 +531,19 @@
             "humidity": 67.768
         },
         "timestamp": "2026-03-15 11:38:50"
+    },
+    {
+        "status": "success",
+        "crop": "Wheat",
+        "prediction": 794.26,
+        "advisory": "Low rainfall. Increase irrigation.",
+        "inputs": {
+            "temp": 29.536,
+            "rain": 0.0,
+            "humidity": 15.934000000000001,
+            "ph": 6.5,
+            "soil": 2
+        },
+        "timestamp": "2026-03-15 13:17:54"
     }
 ]

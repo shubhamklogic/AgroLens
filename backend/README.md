@@ -54,39 +54,49 @@ backend/
 
 ---
 
-# ⚙️ Technical Implementation & Architecture
+# ⚙️ System Architecture
 
-## Core Design
+The AgroLens backend follows a **decoupled, modular architecture** designed for scalability and flexibility.
+Each system component performs a specialized role in the prediction pipeline.
 
-The AgroLens backend follows a **modular API-driven architecture**.
-It acts as an orchestration layer that synchronizes **user-provided soil data with real-time meteorological variables** to produce localized crop recommendations.
+### Architecture Components
+
+**1. Flask API Layer (Orchestrator)**
+The Flask server acts as the central controller of the system. It receives requests from the frontend, validates input data, and coordinates communication between external services and the prediction engine.
+
+**2. External Data Provider – NASA POWER API**
+Environmental data is dynamically retrieved using geographic coordinates. The system fetches a **7-day average of temperature, rainfall, and humidity**, ensuring that predictions reflect recent climatic conditions.
+
+**3. Machine Learning Inference Engine**
+The prediction engine uses a serialized model (`model.pkl`) to estimate crop yield based on environmental features.
+The backend is **model-agnostic**, meaning the placeholder model can be replaced by a fully trained Random Forest or XGBoost model without changing the API interface.
 
 ---
 
-## Data Journey
+# 🔄 Data Flow
 
-### 1️⃣ Input Handling
+The AgroLens prediction pipeline follows a five-step workflow:
 
-The API receives a **POST request** containing:
+### 1️⃣ Input Reception
+
+The API receives a POST request containing:
 
 * Latitude
 * Longitude
 * Soil pH
 * Soil Type
 
-### 2️⃣ External Enrichment
+### 2️⃣ Weather Data Enrichment
 
-The `fetch_weather.py` module retrieves **7-day averages** of:
+The backend calls the NASA POWER API through `fetch_weather.py` to obtain:
 
-* Temperature
-* Rainfall
-* Humidity
+* Average Temperature
+* Total Rainfall
+* Average Humidity
 
-from the **NASA POWER API**.
+### 3️⃣ Feature Engineering
 
-### 3️⃣ Feature Vectorization
-
-All inputs are combined into a **5-parameter feature vector**:
+All inputs are transformed into a structured **5-feature vector** suitable for machine learning models:
 
 ```
 [Temperature, Rainfall, Humidity, Soil_pH, Soil_Type]
@@ -94,28 +104,56 @@ All inputs are combined into a **5-parameter feature vector**:
 
 ### 4️⃣ Model Inference
 
-The vector is processed by the **machine learning inference engine** to estimate crop yield.
+The feature vector is processed by the prediction engine to calculate an estimated crop yield.
 
 ### 5️⃣ Advisory Generation
 
-A rule-based advisory system converts predictions into **human-readable farming recommendations**.
+The backend converts the numerical output into a **human-readable agricultural advisory**, providing farmers with guidance based on environmental stress factors.
+
+---
+
+# 🧠 Backend Implementation Details
+
+## Feature Engineering
+
+The AgroLens system uses **five key environmental parameters**:
+
+* Temperature
+* Rainfall
+* Humidity
+* Soil pH
+* Soil Type
+
+These variables are vectorized into a structured feature array compatible with machine learning inference pipelines.
+
+---
+
+## Biological Logic Enhancements
+
+To ensure realistic predictions during development, the backend includes domain-inspired adjustments:
+
+* **pH Penalty:** Yield decreases as soil pH deviates from the optimal value (7.0).
+* **Soil Type Weighting:** Loamy soil receives higher productivity weighting than sandy soil.
+* **Crop Factors:** Crop-specific adjustment values balance prediction outputs.
+
+These rules simulate realistic agronomic behavior until the final trained model is deployed.
 
 ---
 
 # 🛡️ System Reliability
 
-To maintain stability and production-grade robustness, the backend includes:
+The backend incorporates **defensive programming techniques** to ensure system stability.
 
 ### Input Validation
 
 * Rainfall must be **≥ 0**
 * Temperature must stay within **−10°C to 60°C**
 * Soil pH must be within **0 – 14**
-* Soil Type must be valid categorical input
+* Soil Type must be a valid categorical value
 
 ### Error Handling
 
-Standardized JSON error responses are implemented for:
+The API returns standardized JSON responses for:
 
 * Invalid payloads
 * Missing parameters
@@ -133,7 +171,32 @@ Example response:
 
 ### Data Integrity
 
-The system handles missing meteorological values safely by applying logical fallbacks (for example humidity defaults).
+If the weather API returns incomplete meteorological data, the backend applies logical fallbacks (for example humidity defaults) to prevent system crashes.
+
+---
+
+# 📊 Model Evaluation Framework
+
+Although the current deployment uses a placeholder model, the backend includes an evaluation framework designed for future model validation.
+
+### Performance Metrics
+
+The system supports standard regression metrics:
+
+* **MAE (Mean Absolute Error):** Measures the average magnitude of prediction errors.
+* **RMSE (Root Mean Square Error):** Penalizes large prediction errors.
+* **R² Score:** Indicates how well the model explains variance in yield data.
+
+These metrics allow quantitative assessment of model accuracy.
+
+---
+
+# 🔍 Explainability
+
+To ensure transparency in model decisions, the AgroLens architecture integrates **SHAP (SHapley Additive exPlanations)**.
+
+SHAP values identify which environmental variables most strongly influence crop yield predictions.
+This transforms the model from a **black-box system into an interpretable “glass-box” model**, improving trust in AI-generated recommendations.
 
 ---
 
