@@ -41,4 +41,4 @@ Logic:
 Evaluates how the backend handles harsh agricultural environments with low rainfall, sandy soil, and alkaline pH levels. The system should penalize crops that require high water availability.
 
 Expected Result:
-The system should recommend **Millets or drought-resistant crops** and trigger advisory messages such as **"Low rainfall. Increase irrigation."**
+The system should recommend **Millets or drought-resistant crops** and trigger advisory messages such as **"Low rainfall. Increase irrigation.
