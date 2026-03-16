@@ -636,5 +636,44 @@
             "soil": 2
         },
         "timestamp": "2026-03-16 11:54:43"
+    },
+    {
+        "status": "success",
+        "crop": "Wheat",
+        "prediction": 781.88,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 27.784000000000002,
+            "rain": 0.0,
+            "humidity": 19.362000000000002,
+            "ph": 7.5,
+            "soil": 2
+        },
+        "timestamp": "2026-03-16 12:07:55"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Wheat",
+        "expected_yield": 807.64,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Low humidity indicates dry climate conditions.",
+            "Loamy soil supports strong root development.",
+            "Slightly alkaline soil affects crop suitability."
+        ],
+        "all_predictions": {
+            "Rice": 327.64,
+            "Wheat": 807.64,
+            "Maize": 237.64,
+            "Sugarcane": 644.21,
+            "Millets": 717.64
+        },
+        "environment": {
+            "temp": 27.784000000000002,
+            "rain": 0.0,
+            "humidity": 19.362000000000002
+        },
+        "timestamp": "2026-03-16 12:08:11"
     }
 ]
