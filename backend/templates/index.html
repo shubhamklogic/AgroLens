@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AgroLens Prototype</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f4f4f4; }
+        .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; }
+        button { background: #28a745; color: white; padding: 10px; width: 100%; border: none; cursor: pointer; }
+        #result { margin-top: 20px; padding: 15px; background: #e9ecef; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>AgroLens: Backend Prototype</h2>
+    <p><small>Testing Weather API + Soil Inference Engine</small></p>
+
+    <label>Latitude:</label>
+    <input type="number" id="lat" placeholder="e.g. 26.47">
+
+    <label>Longitude:</label>
+    <input type="number" id="lon" placeholder="e.g. 75.64">
+
+    <label>Soil pH (0.0 - 14.0):</label>
+    <input type="number" id="ph" step="0.1" placeholder="e.g. 6.5">
+
+    <label>Soil Type:</label>
+    <select id="soil_type">
+        <option value="1">Sandy</option>
+        <option value="2">Loamy</option>
+        <option value="3">Clayey</option>
+    </select>
+
+    <label>Select Crop (for yield prediction):</label>
+    <select id="crop">
+    <option value="Rice">Rice</option>
+    <option value="Wheat">Wheat</option>
+    <option value="Maize">Maize</option>
+    <option value="Sugarcane">Sugarcane</option>
+    <option value="Millets">Millets</option>
+    </select>
+
+    <button onclick="predictCrop()">Predict Yield for Selected Crop</button>
+    <button onclick="recommendCrop()" style="background:#007bff;margin-top:10px;">
+    Recommend Best Crop
+    </button>
+
+    <div id="result">
+        <h4>Prediction Output:</h4>
+        <p id="predictionText"></p>
+        <p id="advisoryText" style="color: blue; font-style: italic;"></p>
+    </div>
+</div>
+
+<script>
+
+async function predictCrop() {
+
+    const data = {
+        lat: document.getElementById('lat').value,
+        lon: document.getElementById('lon').value,
+        soil_ph: document.getElementById('ph').value,
+        soil_type: document.getElementById('soil_type').value,
+        crop: document.getElementById('crop').value
+    };
+
+    const response = await fetch('/predict', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    document.getElementById('result').style.display = 'block';
+
+    document.getElementById('predictionText').innerText =
+        `Crop: ${result.crop} | Predicted Yield: ${result.prediction}`;
+
+    document.getElementById('advisoryText').innerText =
+        `Advisory: ${result.advisory}`;
+}
+
+
+async function recommendCrop() {
+
+    const data = {
+        lat: document.getElementById('lat').value,
+        lon: document.getElementById('lon').value,
+        soil_ph: document.getElementById('ph').value,
+        soil_type: document.getElementById('soil_type').value
+    };
+
+    const response = await fetch('/recommend', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    document.getElementById('result').style.display = 'block';
+
+    document.getElementById('predictionText').innerText =
+        `Recommended Crop: ${result.recommended_crop} | Expected Yield: ${result.expected_yield}`;
+
+    document.getElementById('advisoryText').innerText =
+        `Advisory: ${result.advisory}`;
+}
+
+</script>
+
+</body>
+</html>

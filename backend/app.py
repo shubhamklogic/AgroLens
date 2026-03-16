@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from utils.fetch_weather import get_weather_data
 from datetime import datetime
@@ -537,6 +537,15 @@ def weather_api():
             "status": "error"
         }), 500
 
+# -------------------------------------------------
+# HOME PAGE ROUTE
+# -------------------------------------------------
+# This route loads the frontend HTML page when
+# someone opens the base URL of the server.
+
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 # -------------------------------------------------
 # HEALTH CHECK API
