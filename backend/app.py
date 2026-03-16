@@ -426,13 +426,16 @@ def recommend_crop():
                     yield_val = base + (avg_temp * 10) + (humidity * 2)
 
                 elif crop == "Wheat":
-                    yield_val = base + (300 if avg_temp < 25 else 50) + (500 if soil_type == 2 else 0)
+                    yield_val = base + (250 if avg_temp < 25 else 50) + (200 if soil_type == 2 else 0) + (150 if total_rain > 40 else 0)
 
                 elif crop == "Millets":
-                    yield_val = base + (500 if total_rain < 50 else 0) + (400 if soil_type == 1 else 0)
+                    yield_val = base + (500 if total_rain < 50 else 0) + (300 if humidity < 40 else 0) + (300 if soil_type == 1 else 0)
 
                 else:
                     yield_val = base + (total_rain * 2)
+                    # climate penalty
+                if total_rain == 0:
+                   yield_val -= 100
 
             adjusted_yield = yield_val + crop_factor.get(crop, 0)
 
@@ -470,9 +473,9 @@ def recommend_crop():
             "all_predictions": predictions,
 
             "environment": {
-                "temp": avg_temp,
-                "rain": total_rain,
-                "humidity": humidity
+                "temp": round(avg_temp,2),
+                "rain": round(total_rain,2),
+                "humidity": round(humidity,2)
             }
         }
 

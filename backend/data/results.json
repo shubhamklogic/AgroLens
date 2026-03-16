@@ -767,5 +767,55 @@
             "humidity": 19.362000000000002
         },
         "timestamp": "2026-03-16 12:17:34"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Wheat",
+        "expected_yield": 807.64,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Low humidity indicates dry climate conditions.",
+            "Loamy soil supports strong root development.",
+            "Slightly alkaline soil affects crop suitability."
+        ],
+        "all_predictions": {
+            "Rice": 327.64,
+            "Wheat": 807.64,
+            "Maize": 237.64,
+            "Sugarcane": 644.21,
+            "Millets": 717.64
+        },
+        "environment": {
+            "temp": 27.784000000000002,
+            "rain": 0.0,
+            "humidity": 19.362000000000002
+        },
+        "timestamp": "2026-03-16 12:36:08"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 917.64,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Low humidity indicates dry climate conditions.",
+            "Loamy soil supports strong root development.",
+            "Slightly alkaline soil affects crop suitability."
+        ],
+        "all_predictions": {
+            "Rice": 227.64,
+            "Wheat": 407.64,
+            "Maize": 137.64,
+            "Sugarcane": 544.21,
+            "Millets": 917.64
+        },
+        "environment": {
+            "temp": 27.78,
+            "rain": 0.0,
+            "humidity": 19.36
+        },
+        "timestamp": "2026-03-16 13:14:45"
     }
 ]

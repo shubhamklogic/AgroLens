@@ -63,8 +63,9 @@
     <button onclick="fetchWeather()" style="background:#ff9800">
     Fetch Weather Data
     </button>
+
     <div id="weatherBox" style="margin-top:10px;display:none;background:#eef;padding:10px;">
-    <p id="weatherText"></p>
+        <p id="weatherText"></p>
     </div>
 
     <label>Soil pH (0.0 - 14.0):</label>
@@ -77,7 +78,6 @@
         <option value="3">Clayey</option>
     </select>
 
-    <!-- Crop selector only used for prediction -->
     <div id="cropSection">
         <label>Select Crop (for yield prediction):</label>
         <select id="crop">
@@ -99,6 +99,50 @@
         <h4 id="resultTitle">Result</h4>
         <p id="predictionText"></p>
         <p id="advisoryText" style="color: blue; font-style: italic;"></p>
+    </div>
+
+    <!-- Transparency Table -->
+    <div id="transparencyBox" style="margin-top:20px;display:none;background:#f9f9f9;padding:15px;border-radius:5px;">
+
+        <h4>Decision Transparency</h4>
+
+        <table border="1" width="100%" style="border-collapse:collapse;text-align:center">
+
+            <tr>
+                <th>Factor</th>
+                <th>Value</th>
+            </tr>
+
+            <tr>
+                <td>Temperature</td>
+                <td id="tempVal"></td>
+            </tr>
+
+            <tr>
+                <td>Rainfall</td>
+                <td id="rainVal"></td>
+            </tr>
+
+            <tr>
+                <td>Humidity</td>
+                <td id="humVal"></td>
+            </tr>
+
+            <tr>
+                <td>Soil pH</td>
+                <td id="phVal"></td>
+            </tr>
+
+            <tr>
+                <td>Soil Type</td>
+                <td id="soilVal"></td>
+            </tr>
+
+        </table>
+
+        <h4>AI Decision Reasons</h4>
+        <ul id="reasonList"></ul>
+
     </div>
 
 </div>
@@ -123,7 +167,6 @@ async function predictCrop() {
 
     if(!validateInputs()) return;
 
-    // show crop selector again if hidden
     document.getElementById('cropSection').style.display = "block";
 
     const data = {
@@ -151,6 +194,9 @@ async function predictCrop() {
 
     document.getElementById('advisoryText').innerText =
         `Advisory: ${result.advisory}`;
+
+    // Hide transparency for normal prediction
+    document.getElementById('transparencyBox').style.display = "none";
 }
 
 
@@ -158,7 +204,6 @@ async function recommendCrop() {
 
     if(!validateInputs()) return;
 
-    // hide crop selector because system decides crop
     document.getElementById('cropSection').style.display = "none";
 
     const data = {
@@ -185,6 +230,29 @@ async function recommendCrop() {
 
     document.getElementById('advisoryText').innerText =
         `Advisory: ${result.advisory}`;
+
+    document.getElementById('transparencyBox').style.display = "block";
+
+    document.getElementById('tempVal').innerText = result.environment.temp + " °C";
+    document.getElementById('rainVal').innerText = result.environment.rain + " mm";
+    document.getElementById('humVal').innerText = result.environment.humidity + " %";
+    document.getElementById('phVal').innerText = document.getElementById('ph').value;
+
+    const soilMap = {1:"Sandy",2:"Loamy",3:"Clayey"};
+
+    document.getElementById('soilVal').innerText =
+        soilMap[document.getElementById('soil_type').value];
+
+    const reasons = result.decision_factors;
+
+    const list = document.getElementById('reasonList');
+    list.innerHTML = "";
+
+    reasons.forEach(r=>{
+        const li = document.createElement("li");
+        li.innerText = r;
+        list.appendChild(li);
+    });
 }
 
 
@@ -217,9 +285,6 @@ async function fetchWeather(){
 
     }
 }
-
-
-
 
 </script>
 
