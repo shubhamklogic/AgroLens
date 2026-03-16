@@ -59,6 +59,14 @@
     <label>Longitude:</label>
     <input type="number" id="lon" placeholder="e.g. 75.64">
 
+    <label>Check Weather (for testing API):</label>
+    <button onclick="fetchWeather()" style="background:#ff9800">
+    Fetch Weather Data
+    </button>
+    <div id="weatherBox" style="margin-top:10px;display:none;background:#eef;padding:10px;">
+    <p id="weatherText"></p>
+    </div>
+
     <label>Soil pH (0.0 - 14.0):</label>
     <input type="number" id="ph" step="0.1" placeholder="e.g. 6.5">
 
@@ -178,6 +186,40 @@ async function recommendCrop() {
     document.getElementById('advisoryText').innerText =
         `Advisory: ${result.advisory}`;
 }
+
+
+async function fetchWeather(){
+
+    const lat = document.getElementById('lat').value;
+    const lon = document.getElementById('lon').value;
+
+    if(!lat || !lon){
+        alert("Enter latitude and longitude first");
+        return;
+    }
+
+    const response = await fetch(`/weather?lat=${lat}&lon=${lon}`);
+    const result = await response.json();
+
+    document.getElementById('weatherBox').style.display = "block";
+
+    if(result.status === "success"){
+
+        const data = result.data;
+
+        document.getElementById('weatherText').innerText =
+        `Temperature: ${data.avg_temp} °C | Rainfall: ${data.total_rain} mm | Humidity: ${data.humidity}%`;
+
+    }else{
+
+        document.getElementById('weatherText').innerText =
+        "Weather API failed to fetch data.";
+
+    }
+}
+
+
+
 
 </script>
 
