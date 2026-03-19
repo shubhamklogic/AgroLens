@@ -116,11 +116,11 @@ def get_weather_data(lat, lon):
         # RETURN CLEAN WEATHER DATA
         # -------------------------------------------------
         return {
-            "status": "success",
-            "avg_temp": avg_temp,
-            "total_rain": total_rain,
-            "humidity": avg_humidity
-        }
+    "status": "success",
+    "avg_temp": round(avg_temp, 2),
+    "total_rain": round(total_rain, 2),
+    "humidity": round(avg_humidity, 2)
+    }
 
     except requests.exceptions.Timeout:
         # -------------------------------------------------

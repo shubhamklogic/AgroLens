@@ -126,9 +126,13 @@ def save_prediction_result(data):
 # Generates farming advice dynamically based on
 # environmental conditions instead of fixed crop rules.
 def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_feature):
+    
+    # HIGHEST PRIORITY: Extreme temperature
+    if avg_temp < 5 or avg_temp > 45:
+        advice = "Extreme temperature detected. Crop growth is not viable."
 
     # Low rainfall scenario
-    if total_rain < 50:
+    elif total_rain < 50:
         advice = "Low rainfall detected. Consider drought-resistant crops or irrigation."
 
     # Excess rainfall scenario
@@ -204,9 +208,21 @@ def predict():
             }), 400
 
         crop = user_data.get("crop", "wheat").capitalize()
-
-        lat = user_data.get("lat")
-        lon = user_data.get("lon")
+        
+        try:
+          lat = float(user_data.get("lat"))
+          lon = float(user_data.get("lon"))
+        except (TypeError, ValueError):
+          return jsonify({
+        "status": "error",
+        "message": "Latitude and Longitude must be valid numbers"
+         }), 400
+        
+        if not (-90 <= lat <= 90 and -180 <= lon <= 180):
+         return jsonify({
+        "status": "error",
+        "message": "Invalid latitude or longitude"
+        }), 422
 
         # Soil type validation
         try:
@@ -251,23 +267,23 @@ def predict():
         humidity = weather.get("humidity", 60.0)
 
         # Environmental sanity validation
-        if total_rain < 0:
-            return jsonify({
-                "status": "error",
-                "message": "Invalid rainfall: cannot be negative"
-            }), 422
+        if not (isinstance(total_rain, (int, float)) and 0 <= total_rain <= 2000):
+         return jsonify({
+        "status": "error",
+        "message": "Invalid rainfall value"
+        }), 422
 
-        if not (-10 <= avg_temp <= 60):
-            return jsonify({
-                "status": "error",
-                "message": "Temperature out of realistic agricultural bounds"
-            }), 422
+        if not isinstance(avg_temp, (int, float)) or not (-60 <= avg_temp <= 60):
+         return jsonify({
+        "status": "error",
+        "message": "Temperature out of realistic Earth bounds"
+        }), 422
 
-        if not (0 <= humidity <= 100):
-            return jsonify({
-                "status": "error",
-                "message": "Humidity must be between 0 and 100%"
-            }), 422
+        if not isinstance(humidity, (int, float)) or not (0 <= humidity <= 100):
+         return jsonify({
+        "status": "error",
+        "message": "Humidity must be between 0 and 100%"
+        }), 422
 
         # Feature vector for ML model
         features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
@@ -284,7 +300,11 @@ def predict():
             soil_impact = 500 if soil_type == 2 else 200
             ph_penalty = abs(7.0 - soil_ph) * 50
 
-            predicted_yield = base + humidity_impact + soil_impact - ph_penalty
+            predicted_yield = max(0, base + humidity_impact + soil_impact - ph_penalty)
+
+        # 🌱 Biological Kill Switch (GLOBAL AGRICULTURE LOGIC)
+        if avg_temp < 5 or avg_temp > 45:
+           predicted_yield = 0
 
         advisory_data = generate_advisory(
             predicted_yield,
@@ -302,7 +322,7 @@ def predict():
             "advisory": advisory_data["advice"],
 
             "inputs": {
-                "temp": avg_temp,
+                "temp": round(avg_temp,2),
                 "rain": total_rain,
                 "humidity": humidity,
                 "ph": soil_ph,
@@ -339,8 +359,20 @@ def recommend_crop():
                 "message": "Missing coordinates."
             }), 400
 
-        lat = user_data.get("lat")
-        lon = user_data.get("lon")
+        try:
+          lat = float(user_data.get("lat"))
+          lon = float(user_data.get("lon"))
+        except (TypeError, ValueError):
+          return jsonify({
+        "status": "error",
+        "message": "Latitude and Longitude must be valid numbers"
+         }), 400
+
+        if not (-90 <= lat <= 90 and -180 <= lon <= 180):
+         return jsonify({
+        "status": "error",
+        "message": "Invalid latitude or longitude"
+        }), 422
 
         try:
             soil_type = int(user_data.get("soil_type", 2))
@@ -378,23 +410,23 @@ def recommend_crop():
         humidity = weather.get("humidity", 60.0)
 
         # Environmental validation
-        if total_rain < 0:
-            return jsonify({
-                "status": "error",
-                "message": "Invalid rainfall"
-            }), 422
+        if not (isinstance(total_rain, (int, float)) and 0 <= total_rain <= 2000):
+         return jsonify({
+        "status": "error",
+        "message": "Invalid rainfall value"
+        }), 422
 
-        if not (-10 <= avg_temp <= 60):
-            return jsonify({
-                "status": "error",
-                "message": "Temperature out of bounds"
-            }), 422
+        if not isinstance(avg_temp, (int, float)) or not (-60 <= avg_temp <= 60):
+         return jsonify({
+        "status": "error",
+        "message": "Temperature out of realistic Earth bounds"
+        }), 422
 
-        if not (0 <= humidity <= 100):
-            return jsonify({
-                "status": "error",
-                "message": "Invalid humidity"
-            }), 422
+        if not isinstance(humidity, (int, float)) or not (0 <= humidity <= 100):
+         return jsonify({
+        "status": "error",
+        "message": "Humidity must be between 0 and 100%"
+        }), 422
 
         possible_crops = [
             "Rice",
@@ -434,15 +466,17 @@ def recommend_crop():
                 else:
                     yield_val = base + (total_rain * 2)
                     # climate penalty
-                if total_rain == 0:
-                   yield_val -= 100
-
-            adjusted_yield = yield_val + crop_factor.get(crop, 0)
-
-            predictions[crop] = round(adjusted_yield, 2)
-
-        # Choose crop with highest predicted yield
-        best_crop = max(predictions, key=predictions.get)
+            if total_rain == 0:
+                 yield_val -= 100
+            total_yield = yield_val + crop_factor.get(crop, 0)
+            final_score = 0 if (avg_temp < 5 or avg_temp > 45) else max(0, total_yield)
+            predictions[crop] = round(final_score, 2)
+            if all(value == 0 for value in predictions.values()):
+              best_crop = "None"
+              expected_yield = 0
+            else:
+              best_crop = max(predictions, key=predictions.get)
+              expected_yield = predictions[best_crop]
 
         response = {
 
@@ -450,11 +484,11 @@ def recommend_crop():
 
             "recommended_crop": best_crop,
 
-            "expected_yield": predictions[best_crop],
+            "expected_yield": expected_yield,
 
             # Dynamic advisory instead of static crop message
             "advisory": generate_advisory(
-                predictions[best_crop],
+                expected_yield,
                 avg_temp,
                 total_rain,
                 soil_ph,

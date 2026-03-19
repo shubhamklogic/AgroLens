@@ -226,7 +226,7 @@ async function recommendCrop() {
     document.getElementById('resultTitle').innerText = "AI Recommendation";
 
     document.getElementById('predictionText').innerText =
-        `Recommended Crop: ${result.recommended_crop} | Expected Yield: ${result.expected_yield}`;
+        `Recommended Crop: ${result.recommended_crop === "None" ? "No suitable crop" : result.recommended_crop}`
 
     document.getElementById('advisoryText').innerText =
         `Advisory: ${result.advisory}`;
@@ -276,7 +276,7 @@ async function fetchWeather(){
         const data = result.data;
 
         document.getElementById('weatherText').innerText =
-        `Temperature: ${data.avg_temp} °C | Rainfall: ${data.total_rain} mm | Humidity: ${data.humidity}%`;
+        `Temperature: ${data.avg_temp.toFixed(2)} °C | Rainfall: ${data.total_rain.toFixed(2)} mm | Humidity: ${data.humidity.toFixed(2)}%`;
 
     }else{
 
