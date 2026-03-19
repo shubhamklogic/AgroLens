@@ -170,6 +170,9 @@ def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_featur
 def explain_recommendation(avg_temp, total_rain, humidity, soil_ph, soil_type):
 
     reasons = []
+    
+    if avg_temp < 5 or avg_temp > 45:
+        return ["Extreme temperature makes crop growth impossible."]
 
     if total_rain < 50:
         reasons.append("Low rainfall favors drought-resistant crops.")
