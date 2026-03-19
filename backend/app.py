@@ -178,7 +178,7 @@ def explain_recommendation(avg_temp, total_rain, humidity, soil_ph, soil_type):
         reasons.append("Low rainfall favors drought-resistant crops.")
 
     if avg_temp > 30:
-        reasons.append("Higher temperatures favor heat-tolerant crops.")
+        reasons.append("Moderately high temperature supports heat-tolerant crops.")
 
     if humidity < 30:
         reasons.append("Low humidity indicates dry climate conditions.")
@@ -188,8 +188,17 @@ def explain_recommendation(avg_temp, total_rain, humidity, soil_ph, soil_type):
 
     if soil_ph > 7:
         reasons.append("Slightly alkaline soil affects crop suitability.")
+    
+    if soil_type == 1:
+        reasons.append("Sandy soil favors drought-resistant crops like millets.")
+    
+    if soil_type == 1 and total_rain < 50:
+        reasons.append("Combined dry conditions and sandy soil strongly favor millets.")
+    
+    if not reasons:
+        reasons.append("Environmental conditions moderately support crop growth.")
 
-    return reasons
+    return reasons[:3]
 
 
 # -------------------------------------------------
