@@ -1,49 +1,89 @@
-# Baseline Crop Yield Prediction (Random Forest)
+# Baseline Yield Prediction Model – AgroLens
 
-This module implements the baseline machine learning model for the
-AgroLens project. The purpose of the baseline is to demonstrate the
-technical feasibility of predicting crop yield from structured
-agricultural data and to establish benchmark performance metrics.
+This module implements the current baseline machine learning model used
+in the AgroLens prototype to predict crop yield using agro-climatic,
+soil, and management variables.
+
+The baseline focuses on rice yield modelling at a state–year resolution
+to validate the feasibility of sensor-less crop productivity prediction.
 
 ## Problem Definition
-The task is framed as a supervised regression problem where the goal is
-to predict crop yield (kg/ha) for a given crop and region using historical
-environmental features.
 
-## Why Random Forest
-Agricultural yield is influenced by nonlinear relationships and complex
-interactions between weather and soil variables. Random Forest is chosen
-as the baseline model because it:
-- Captures nonlinear patterns without manual feature engineering
-- Handles feature interactions automatically
-- Performs well on small-to-medium tabular datasets
-- Provides interpretable feature importance
+The task is formulated as a supervised regression problem:
 
-Linear regression is considered only as a conceptual reference and is
-not used as the primary baseline due to its restrictive assumptions.
+Predict crop yield (tonnes per hectare) using historical environmental,
+soil, and agricultural management features.
 
-## Input Features
-Typical features used by the baseline model include:
-- Weather variables (e.g., rainfall, average temperature)
-- Soil characteristics (e.g., pH, organic carbon)
-- Temporal context (year or season)
+## Dataset
 
-## Target Variable
-- Crop yield measured in kilograms per hectare (kg/ha)
+A multi-source agro-climatic dataset was constructed by merging:
 
-## Evaluation Metrics
-Model performance is evaluated using standard regression metrics:
-- Mean Absolute Error (MAE)
-- Root Mean Squared Error (RMSE)
-- R² score
+* Historical rice yield panel data
+* State-level weather time series (temperature, rainfall, humidity)
+* Static soil nutrient and pH indicators
+* Fertilizer and pesticide usage data
 
-These metrics establish a reference point for future model improvements.
+After preprocessing and aggregation, the modelling dataset contains
+approximately 650 state–year observations covering the period 1997–2020.
 
-## Scope and Limitations
-This baseline model:
-- Uses a limited dataset and minimal feature engineering
-- Is not optimized for production deployment
-- Serves as a proof-of-concept prototype
+## Preprocessing Pipeline
 
-Future iterations will focus on improved data quality, feature
-engineering, advanced ensemble models, and explainability.
+* Filtering dataset to a single crop (Rice)
+* Removal of leakage variables such as production and area
+* Aggregation at state–year level
+* Log transformation of fertilizer and pesticide usage
+* Encoding of spatial identifiers (state codes)
+* Time-aware train/test split
+
+## Model Choice
+
+The baseline model uses Gradient Boosted Decision Trees implemented via
+XGBoost.
+
+Reasons for choosing XGBoost:
+
+* Strong performance on structured tabular datasets
+* Ability to capture nonlinear agro-climatic relationships
+* Robust handling of moderate dataset sizes
+* Reduced bias compared to bagging-based ensembles
+* Widely adopted in applied agricultural ML research
+
+## Evaluation Strategy
+
+Model performance is evaluated using a temporal hold-out strategy:
+
+* Training set: years ≤ 2015
+* Test set: years > 2015
+
+Metrics used:
+
+* R² Score
+* Mean Absolute Error (MAE)
+
+## Current Results
+
+* Aggregated dataset size: ~650 samples
+* Test R² ≈ 0.79
+* Test MAE ≈ 0.22
+
+These results indicate the model successfully captures significant
+yield variability driven by climatic and management factors.
+
+## Outputs
+
+* Trained model saved at: `ml/models/xgb_rice_model.pkl`
+* Evaluation plot saved at: `reports/actual_vs_predicted.png`
+
+## Limitations
+
+* Spatial resolution limited to state-level aggregation
+* Soil variables are static and may not reflect intra-state variability
+* Management data may include reporting noise
+
+## Future Improvements
+
+* District-level yield modelling
+* Integration of satellite weather and vegetation indices
+* Explainable AI-based advisory generation
+* Real-time inference integration into AgroLens backend
+

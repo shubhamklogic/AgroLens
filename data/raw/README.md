@@ -1,45 +1,73 @@
-# Rajasthan Wheat Yield Dataset (Prototype – Baseline Modeling)
+# AgroLens Rice Yield Dataset (Agro-Climatic Prototype)
 
-This directory contains a real, manually compiled time-series dataset
-used for developing and validating the baseline machine learning model
-for crop yield prediction in the AgroLens project.
+This directory contains the processed dataset used to train and evaluate
+the AgroLens crop yield prediction prototype.
 
 ## Scope
-- Crop: Wheat
-- Region: Rajasthan (state level)
-- Granularity: Yearly
-- Time span: 2000–2013
+
+* Crop: Rice
+* Region: Multiple Indian states
+* Granularity: State–Year panel
+* Time span: 1997–2020
+
+## Dataset Construction
+
+The dataset was engineered by integrating multiple agricultural data sources:
+
+1. Historical crop yield records filtered for rice.
+2. State-level weather time series including:
+
+   * Average temperature
+   * Total rainfall
+   * Average humidity
+3. Static soil nutrient and pH indicators.
+4. Management variables such as fertilizer and pesticide usage.
+
+The datasets were merged on common keys (`state`, `year`) to construct a
+multi-source agro-climatic panel dataset suitable for supervised learning.
 
 ## Features
-- rainfall_mm: Annual total rainfall across Rajasthan (millimeters)
+
+* year
+* state (categorical location identifier)
+* fertilizer (state-level usage indicator)
+* pesticide (state-level usage indicator)
+* avg_temp_c
+* total_rainfall_mm
+* avg_humidity_percent
+* soil nutrients (N, P, K)
+* soil pH
 
 ## Target
-- yield_kg_per_ha: Average wheat yield across Rajasthan
-  (kilograms per hectare)
 
-## Data Sources
-Data has been manually extracted and consolidated from official
-Rajasthan agricultural statistical reports and state rainfall records.
-These reports are typically published as annual PDFs.
+* yield: Rice productivity (tonnes per hectare)
 
 ## Data Characteristics
-- State-level aggregated values
-- Limited feature set (rainfall only in baseline version)
-- Moderate sample size (~14 yearly observations)
+
+* Contains temporal climate variability across states.
+* Soil indicators are static per state (slow-changing agronomic property).
+* Management features introduce realistic production variability.
+* After aggregation, the modeling dataset contains ~650 state–year observations.
 
 ## Purpose
-This dataset is used to:
-- validate the machine learning training and evaluation pipeline
-- establish an initial baseline relationship between climate variation
-  and crop productivity
-- enable rapid prototyping before integration of additional features
-  such as temperature, irrigation intensity, and soil parameters
+
+This dataset enables:
+
+* validation of the AgroLens agro-climatic machine learning pipeline
+* assessment of climate and management influence on crop productivity
+* development of a baseline regression model prior to district-level scaling
 
 ## Limitations
-- Temporal resolution is annual
-- Spatial resolution is state-level (not district or farm level)
-- Feature space is currently minimal
-- Dataset size is relatively small for robust generalization
 
-Future iterations of the project will expand this dataset using
-additional climatic, agronomic, and geospatial data sources.
+* Spatial resolution is state-level (not district or farm level).
+* Management variables are aggregated and may contain reporting noise.
+* Soil indicators are static and do not capture intra-state heterogeneity.
+* Dataset size is moderate, suitable for prototyping but not final deployment.
+
+## Future Improvements
+
+* District-level yield integration
+* Satellite-derived weather and vegetation indices (e.g., NASA POWER, NDVI)
+* Irrigation intensity and cropping pattern features
+* Farm-level advisory personalization
+
