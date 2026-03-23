@@ -395,7 +395,7 @@ def recommend_crop():
         }), 422
 
         if not is_land_location(lat, lon):
-        return jsonify({
+         return jsonify({
         "status": "error",
         "message": "Selected location is in ocean. Farming not possible."
          }), 422
