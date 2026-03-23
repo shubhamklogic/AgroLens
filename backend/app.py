@@ -237,6 +237,13 @@ def predict():
         "message": "Invalid latitude or longitude"
         }), 422
 
+        # 🌍 LAND VALIDATION CHECK
+        if not is_land_location(lat, lon):
+         return jsonify({
+        "status": "error",
+        "message": "Selected location is in ocean. Farming not possible."
+         }), 422
+
         # Soil type validation
         try:
             soil_type = int(user_data.get("soil_type", 2))
@@ -386,6 +393,12 @@ def recommend_crop():
         "status": "error",
         "message": "Invalid latitude or longitude"
         }), 422
+
+        if not is_land_location(lat, lon):
+        return jsonify({
+        "status": "error",
+        "message": "Selected location is in ocean. Farming not possible."
+         }), 422
 
         try:
             soil_type = int(user_data.get("soil_type", 2))
