@@ -161,6 +161,29 @@ def generate_advisory(predicted_yield, avg_temp, total_rain, soil_ph, top_featur
         "primary_factor": top_feature
     }
 
+def is_crop_suitable(crop, rain, humidity, soil_type):
+
+    if crop == "Rice":
+        if rain < 20 and humidity < 30:
+            return False
+
+    elif crop == "Wheat":
+        if rain > 150:
+            return False
+
+    elif crop == "Millets":
+        return True  # grows everywhere
+
+    elif crop == "Sugarcane":
+        if rain < 75:
+            return False
+
+    elif crop == "Maize":
+        if rain < 50:
+            return False
+
+    return True
+
 
 # -------------------------------------------------
 # DECISION EXPLANATION ENGINE
@@ -305,22 +328,60 @@ def predict():
         "message": "Humidity must be between 0 and 100%"
         }), 422
 
-        # Feature vector for ML model
-        features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
+        crop_encoding = {
+        "Rice": 1,
+        "Wheat": 2,
+        "Maize": 3,
+        "Sugarcane": 4,
+        "Millets": 5
+        }
+
+        features = [[avg_temp, total_rain, humidity, soil_ph, soil_type, crop_encoding[crop]]]
+        
+        # 🚨 Crop suitability check
+        if not is_crop_suitable(crop, total_rain, humidity, soil_type):
+         return jsonify({
+        "status": "success",
+        "crop": crop,
+        "prediction": 0,
+        "advisory": f"{crop} is not suitable for this environment"
+         })
 
         # If ML model exists use it
-        if model and hasattr(model, "predict"):
+        if model and hasattr(model, "predict") and callable(model.predict):
 
-            predicted_yield = float(model.predict(features)[0])
+          predicted_yield = float(model.predict(features)[0])
 
         else:
-            # Fallback rule-based yield estimation
-            base = (avg_temp * 10) + (total_rain * 5)
-            humidity_impact = (humidity * 1.5)
-            soil_impact = 500 if soil_type == 2 else 200
-            ph_penalty = abs(7.0 - soil_ph) * 50
+            # 🌱 Improved crop-specific fallback logic
 
-            predicted_yield = max(0, base + humidity_impact + soil_impact - ph_penalty)
+         if crop == "Rice":
+          if total_rain > 100:
+            predicted_yield = total_rain * 10
+          else:
+            predicted_yield = 0
+
+         elif crop == "Millets":
+          predicted_yield = 300 + (50 if total_rain < 50 else 0)
+
+         elif crop == "Wheat":
+           predicted_yield = 200 if avg_temp < 25 else 100
+
+         elif crop == "Sugarcane":
+          predicted_yield = 400 if total_rain > 75 else 150
+
+         elif crop == "Maize":
+          predicted_yield = 250 if total_rain > 50 else 100
+
+         else:
+          predicted_yield = 100
+        
+        # Climate penalty
+        if total_rain < 50:
+         predicted_yield *= 0.3
+
+        if humidity < 30:
+         predicted_yield *= 0.5
 
         # 🌱 Biological Kill Switch (GLOBAL AGRICULTURE LOGIC)
         if avg_temp < 5 or avg_temp > 45:
@@ -467,7 +528,15 @@ def recommend_crop():
         # Evaluate yield for each crop
         for crop in possible_crops:
 
-            features = [[avg_temp, total_rain, humidity, soil_ph, soil_type]]
+            crop_encoding = {
+             "Rice": 1,
+             "Wheat": 2,
+             "Maize": 3,
+             "Sugarcane": 4,
+             "Millets": 5
+            }
+
+            features = [[avg_temp, total_rain, humidity, soil_ph, soil_type, crop_encoding[crop]]]
 
             if model and hasattr(model, "predict"):
 
@@ -497,10 +566,11 @@ def recommend_crop():
             total_yield = yield_val + crop_factor.get(crop, 0)
             final_score = 0 if (avg_temp < 5 or avg_temp > 45) else max(0, total_yield)
             predictions[crop] = round(final_score, 2)
-            if all(value == 0 for value in predictions.values()):
+
+        if all(value == 0 for value in predictions.values()):
               best_crop = "None"
               expected_yield = 0
-            else:
+        else:
               best_crop = max(predictions, key=predictions.get)
               expected_yield = predictions[best_crop]
 

@@ -26,7 +26,11 @@ df = pd.DataFrame(data)
 # 2. Define Features (X) and Target (y)
 # ---------------------------------------------------
 
-X = df[['temp', 'rain', 'soil_ph']]
+df['humidity'] = np.random.uniform(30, 80, 100)
+df['soil_type'] = np.random.randint(1, 4, 100)
+df['crop'] = np.random.randint(1, 6, 100)
+
+X = df[['temp', 'rain', 'humidity', 'soil_ph', 'soil_type', 'crop']]
 y = df['yield']
 
 

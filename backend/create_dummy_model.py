@@ -1,14 +1,25 @@
 import pickle
 
-# New Feature Set: [Temp, Rain, Humidity, Soil_pH, Soil_Type_Encoded]
-# Soil_Type can be represented as a number: 1=Sandy, 2=Loamy, 3=Clayey
-dummy_model_v2 = {
-    "version": "2.0",
-    "features": ["temp", "rain", "humidity", "soil_ph", "soil_type"],
-    "type": "placeholder"
-}
+class DummyModel:
+    def predict(self, X):
+        # X = [temp, rain, humidity, soil_ph, soil_type, crop]
+        results = []
+        for row in X:
+            temp, rain, humidity, ph, soil, crop = row
+
+            # simple logic
+            if rain < 50:
+                yield_val = 50
+            else:
+                yield_val = 200 + rain
+
+            results.append(yield_val)
+
+        return results
+
+model = DummyModel()
 
 with open("model.pkl", "wb") as f:
-    pickle.dump(dummy_model_v2, f)
+    pickle.dump(model, f)
 
-print("✅ Updated Dummy Model (v2.0) with 5 features created!")
+print("✅ Dummy ML Model with predict() created!")

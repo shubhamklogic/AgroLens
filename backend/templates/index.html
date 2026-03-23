@@ -170,12 +170,12 @@ async function predictCrop() {
     document.getElementById('cropSection').style.display = "block";
 
     const data = {
-        lat: document.getElementById('lat').value,
-        lon: document.getElementById('lon').value,
-        soil_ph: document.getElementById('ph').value,
-        soil_type: document.getElementById('soil_type').value,
-        crop: document.getElementById('crop').value
-    };
+    lat: parseFloat(document.getElementById('lat').value),
+    lon: parseFloat(document.getElementById('lon').value),
+    soil_ph: parseFloat(document.getElementById('ph').value),
+    soil_type: parseInt(document.getElementById('soil_type').value),
+    crop: document.getElementById('crop').value
+    }; 
 
     const response = await fetch('/predict', {
         method: 'POST',
@@ -215,10 +215,10 @@ async function recommendCrop() {
     document.getElementById('cropSection').style.display = "none";
 
     const data = {
-        lat: document.getElementById('lat').value,
-        lon: document.getElementById('lon').value,
-        soil_ph: document.getElementById('ph').value,
-        soil_type: document.getElementById('soil_type').value
+    lat: parseFloat(document.getElementById('lat').value),
+    lon: parseFloat(document.getElementById('lon').value),
+    soil_ph: parseFloat(document.getElementById('ph').value),
+    soil_type: parseInt(document.getElementById('soil_type').value)
     };
 
     const response = await fetch('/recommend', {

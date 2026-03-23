@@ -1160,5 +1160,504 @@
             "humidity": 18.57
         },
         "timestamp": "2026-03-19 17:48:08"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 508.1,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 18:31:57"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1340.9,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Sandy soil favors drought-resistant crops like millets.",
+            "Combined dry conditions and sandy soil strongly favor millets."
+        ],
+        "all_predictions": {
+            "Rice": 376.1,
+            "Wheat": 330.9,
+            "Maize": 263.42,
+            "Sugarcane": 692.7,
+            "Millets": 1340.9
+        },
+        "environment": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0
+        },
+        "timestamp": "2026-03-23 18:32:04"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1040.9,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Loamy soil supports strong root development."
+        ],
+        "all_predictions": {
+            "Rice": 376.1,
+            "Wheat": 530.9,
+            "Maize": 263.42,
+            "Sugarcane": 692.7,
+            "Millets": 1040.9
+        },
+        "environment": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0
+        },
+        "timestamp": "2026-03-23 18:32:14"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1040.9,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Loamy soil supports strong root development."
+        ],
+        "all_predictions": {
+            "Rice": 376.1,
+            "Wheat": 530.9,
+            "Maize": 263.42,
+            "Sugarcane": 692.7,
+            "Millets": 1040.9
+        },
+        "environment": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0
+        },
+        "timestamp": "2026-03-23 18:32:23"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 808.1,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0,
+            "ph": 6.5,
+            "soil": 2
+        },
+        "timestamp": "2026-03-23 18:32:25"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 808.1,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0,
+            "ph": 6.5,
+            "soil": 2
+        },
+        "timestamp": "2026-03-23 18:32:27"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1040.9,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Loamy soil supports strong root development."
+        ],
+        "all_predictions": {
+            "Rice": 376.1,
+            "Wheat": 530.9,
+            "Maize": 263.42,
+            "Sugarcane": 692.7,
+            "Millets": 1040.9
+        },
+        "environment": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0
+        },
+        "timestamp": "2026-03-23 18:32:31"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 508.1,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0,
+            "ph": 6.5,
+            "soil": 3
+        },
+        "timestamp": "2026-03-23 18:32:41"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1040.9,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops."
+        ],
+        "all_predictions": {
+            "Rice": 976.1,
+            "Wheat": 330.9,
+            "Maize": 263.42,
+            "Sugarcane": 692.7,
+            "Millets": 1040.9
+        },
+        "environment": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0
+        },
+        "timestamp": "2026-03-23 18:32:51"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1324.71,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Sandy soil favors drought-resistant crops like millets.",
+            "Combined dry conditions and sandy soil strongly favor millets."
+        ],
+        "all_predictions": {
+            "Rice": 361.11,
+            "Wheat": 514.71,
+            "Maize": 247.35,
+            "Sugarcane": 643.37,
+            "Millets": 1324.71
+        },
+        "environment": {
+            "temp": 24.79,
+            "rain": 1.32,
+            "humidity": 30.38
+        },
+        "timestamp": "2026-03-23 18:36:12"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1024.71,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Loamy soil supports strong root development."
+        ],
+        "all_predictions": {
+            "Rice": 361.11,
+            "Wheat": 714.71,
+            "Maize": 247.35,
+            "Sugarcane": 643.37,
+            "Millets": 1024.71
+        },
+        "environment": {
+            "temp": 24.79,
+            "rain": 1.32,
+            "humidity": 30.38
+        },
+        "timestamp": "2026-03-23 18:37:25"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1024.71,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops."
+        ],
+        "all_predictions": {
+            "Rice": 961.11,
+            "Wheat": 514.71,
+            "Maize": 247.35,
+            "Sugarcane": 643.37,
+            "Millets": 1024.71
+        },
+        "environment": {
+            "temp": 24.79,
+            "rain": 1.32,
+            "humidity": 30.38
+        },
+        "timestamp": "2026-03-23 18:37:35"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 475.07,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 24.79,
+            "rain": 1.32,
+            "humidity": 30.38,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 18:37:58"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 475.07,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 24.79,
+            "rain": 1.32,
+            "humidity": 30.38,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 18:38:05"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 392.12,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 18.49,
+            "rain": 0.0,
+            "humidity": 21.48,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 18:39:27"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 392.12,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 18.49,
+            "rain": 0.0,
+            "humidity": 21.48,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 18:39:30"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1175.41,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Low humidity indicates dry climate conditions.",
+            "Sandy soil favors drought-resistant crops like millets."
+        ],
+        "all_predictions": {
+            "Rice": 185.41,
+            "Wheat": 365.41,
+            "Maize": 95.41,
+            "Sugarcane": 413.27,
+            "Millets": 1175.41
+        },
+        "environment": {
+            "temp": 18.49,
+            "rain": 0.0,
+            "humidity": 21.48
+        },
+        "timestamp": "2026-03-23 18:39:48"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1175.41,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Low humidity indicates dry climate conditions.",
+            "Sandy soil favors drought-resistant crops like millets."
+        ],
+        "all_predictions": {
+            "Rice": 185.41,
+            "Wheat": 365.41,
+            "Maize": 95.41,
+            "Sugarcane": 413.27,
+            "Millets": 1175.41
+        },
+        "environment": {
+            "temp": 18.49,
+            "rain": 0.0,
+            "humidity": 21.48
+        },
+        "timestamp": "2026-03-23 18:41:07"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 392.12,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 18.49,
+            "rain": 0.0,
+            "humidity": 21.48,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 18:41:08"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1175.41,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Low humidity indicates dry climate conditions.",
+            "Sandy soil favors drought-resistant crops like millets."
+        ],
+        "all_predictions": {
+            "Rice": 185.41,
+            "Wheat": 365.41,
+            "Maize": 95.41,
+            "Sugarcane": 413.27,
+            "Millets": 1175.41
+        },
+        "environment": {
+            "temp": 18.49,
+            "rain": 0.0,
+            "humidity": 21.48
+        },
+        "timestamp": "2026-03-23 18:41:43"
+    },
+    {
+        "status": "success",
+        "crop": "Wheat",
+        "prediction": 30.0,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 18.49,
+            "rain": 0.0,
+            "humidity": 21.48,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 19:27:21"
+    },
+    {
+        "status": "success",
+        "crop": "Millets",
+        "prediction": 52.5,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 18.49,
+            "rain": 0.0,
+            "humidity": 21.48,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 19:27:49"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1175.41,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Low humidity indicates dry climate conditions.",
+            "Sandy soil favors drought-resistant crops like millets."
+        ],
+        "all_predictions": {
+            "Rice": 185.41,
+            "Wheat": 365.41,
+            "Maize": 95.41,
+            "Sugarcane": 413.27,
+            "Millets": 1175.41
+        },
+        "environment": {
+            "temp": 18.49,
+            "rain": 0.0,
+            "humidity": 21.48
+        },
+        "timestamp": "2026-03-23 19:27:59"
+    },
+    {
+        "status": "success",
+        "crop": "Millets",
+        "prediction": 105.0,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 19:29:32"
+    },
+    {
+        "status": "success",
+        "crop": "Millets",
+        "prediction": 105.0,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0,
+            "ph": 6.5,
+            "soil": 1
+        },
+        "timestamp": "2026-03-23 19:29:37"
+    },
+    {
+        "status": "success",
+        "recommended_crop": "Millets",
+        "expected_yield": 1040.9,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "decision_factors": [
+            "Low rainfall favors drought-resistant crops.",
+            "Loamy soil supports strong root development."
+        ],
+        "all_predictions": {
+            "Rice": 376.1,
+            "Wheat": 530.9,
+            "Maize": 263.42,
+            "Sugarcane": 692.7,
+            "Millets": 1040.9
+        },
+        "environment": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0
+        },
+        "timestamp": "2026-03-23 19:32:52"
+    },
+    {
+        "status": "success",
+        "crop": "Rice",
+        "prediction": 0.0,
+        "advisory": "Low rainfall detected. Consider drought-resistant crops or irrigation.",
+        "inputs": {
+            "temp": 28.18,
+            "rain": 1.26,
+            "humidity": 30.0,
+            "ph": 6.5,
+            "soil": 2
+        },
+        "timestamp": "2026-03-23 19:35:54"
     }
 ]
