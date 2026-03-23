@@ -189,11 +189,19 @@ async function predictCrop() {
 
     document.getElementById('resultTitle').innerText = "Prediction Result";
 
+    if(result.status === "error"){
+    
+    document.getElementById('predictionText').innerText = "❌ " + result.message;
+    document.getElementById('advisoryText').innerText = "";
+
+    }else{
+
     document.getElementById('predictionText').innerText =
-        `Crop: ${result.crop} | Predicted Yield: ${result.prediction}`;
+    `Crop: ${result.crop} | Predicted Yield: ${result.prediction}`;
 
     document.getElementById('advisoryText').innerText =
-        `Advisory: ${result.advisory}`;
+    `Advisory: ${result.advisory}`;
+    }
 
     // Hide transparency for normal prediction
     document.getElementById('transparencyBox').style.display = "none";
@@ -221,15 +229,42 @@ async function recommendCrop() {
 
     const result = await response.json();
 
+    // ✅ ERROR HANDLING (ADD THIS)
+    if(result.status === "error"){
+
     document.getElementById('result').style.display = 'block';
 
     document.getElementById('resultTitle').innerText = "AI Recommendation";
 
+    document.getElementById('predictionText').innerText = "❌ " + result.message;
+    document.getElementById('advisoryText').innerText = "";
+
+    // Hide table completely
+    document.getElementById('transparencyBox').style.display = "none";
+
+    return; // 🔥 VERY IMPORTANT
+    }
+
+    document.getElementById('result').style.display = 'block';
+
+    document.getElementById('resultTitle').innerText = "AI Recommendation";
+
+    if(result.status === "error"){
+
+    document.getElementById('predictionText').innerText = "❌ " + result.message;
+    document.getElementById('advisoryText').innerText = "";
+
+    document.getElementById('transparencyBox').style.display = "none";
+    return;
+
+    }else{
+
     document.getElementById('predictionText').innerText =
-        `Recommended Crop: ${result.recommended_crop === "None" ? "No suitable crop" : result.recommended_crop}`
+        `Recommended Crop: ${result.recommended_crop === "None" ? "No suitable crop" : result.recommended_crop}`;
 
     document.getElementById('advisoryText').innerText =
         `Advisory: ${result.advisory}`;
+}
 
     document.getElementById('transparencyBox').style.display = "block";
 
@@ -243,7 +278,7 @@ async function recommendCrop() {
     document.getElementById('soilVal').innerText =
         soilMap[document.getElementById('soil_type').value];
 
-    const reasons = result.decision_factors;
+    const reasons = result.decision_factors || [];
 
     const list = document.getElementById('reasonList');
     list.innerHTML = "";
