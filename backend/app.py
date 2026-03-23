@@ -1,3 +1,4 @@
+from utils.location_check import is_land_location
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from utils.fetch_weather import get_weather_data
