@@ -14,8 +14,7 @@ to support data-driven farming decisions.
 - Crop yield prediction using machine learning
 - Advisory on irrigation and fertilizer usage
 - Explainable AI (feature importance)
-- Offline functionality
-- Bilingual support (English & Hindi)
+- Bilingual support
 - Simple and farmer-friendly interface
 
 ## Technology Stack
